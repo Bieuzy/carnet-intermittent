@@ -1,0 +1,796 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>html{color-scheme:light}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Carnet d'intermittent</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout : une colonne calme, un grand compteur vers 507 h, la courbe de progression, puis les listes */
+:root{
+  --bg:#f6f7fa; --surface:#ffffff; --sunk:#eceef4; --ink:#161a2c; --muted:#5d6278; --line:#dfe2ea;
+  --accent:#b3202e; --accent-ink:#ffffff; --accent-soft:#f7e3e5;
+  --work:#2f3b6b; --work-soft:#e3e7f5;
+  --good:#1d7a4f; --good-soft:#dff1e7; --warn:#a1620b; --warn-soft:#fbefd9;
+  --f-display:"Bricolage Grotesque","Avenir Next","Segoe UI",sans-serif;
+  --f-body:"IBM Plex Sans","Segoe UI",system-ui,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#12141d; --surface:#1b1e2a; --sunk:#242838; --ink:#e9ebf3; --muted:#9ba0b6; --line:#2f3446;
+  --accent:#e2515d; --accent-ink:#16080a; --accent-soft:#3a1d22; --work:#8d9ce0; --work-soft:#262c45;
+  --good:#5cc790; --good-soft:#18342a; --warn:#e6a845; --warn-soft:#3a2c14; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#12141d; --surface:#1b1e2a; --sunk:#242838; --ink:#e9ebf3; --muted:#9ba0b6; --line:#2f3446;
+  --accent:#e2515d; --accent-ink:#16080a; --accent-soft:#3a1d22; --work:#8d9ce0; --work-soft:#262c45;
+  --good:#5cc790; --good-soft:#18342a; --warn:#e6a845; --warn-soft:#3a2c14; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5}
+.wrap{max-width:860px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 56px}
+header.top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px}
+h1{font-family:var(--f-display);font-weight:700;font-size:26px;margin:0;letter-spacing:-.01em}
+h1 span{color:var(--accent)}
+.status{font-family:var(--f-mono);font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--muted)} .dot.ok{background:var(--good)}
+nav.tabs{display:flex;gap:4px;margin:14px 0 22px;border-bottom:1px solid var(--line);overflow-x:auto;scrollbar-width:none}
+nav.tabs button{font:600 15px var(--f-body);background:none;border:0;border-bottom:2px solid transparent;margin-bottom:-1px;color:var(--muted);padding:10px 12px;cursor:pointer;white-space:nowrap}
+nav.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+h2{font-family:var(--f-display);font-weight:700;font-size:22px;margin:0;text-wrap:balance}
+h3{font-family:var(--f-display);font-weight:500;font-size:17px;margin:0}
+section{display:grid;gap:18px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px;min-width:0}
+.label{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600}
+.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.hint{font-size:13px;color:var(--muted);margin:0}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.spacer{flex:1}
+.pill{display:inline-block;font-size:12px;font-weight:600;padding:2px 9px;border-radius:999px;background:var(--sunk);color:var(--muted);white-space:nowrap}
+.pill.good{background:var(--good-soft);color:var(--good)} .pill.warn{background:var(--warn-soft);color:var(--warn)} .pill.acc{background:var(--accent-soft);color:var(--accent)}
+.btn{font:600 14px var(--f-body);border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:8px;padding:9px 14px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.btn:hover{border-color:var(--ink)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn.ghost{border-color:transparent;background:none;color:var(--muted);padding:6px 8px;font-weight:500}
+.btn.ghost:hover{color:var(--ink)}
+.btn.small{padding:5px 10px;font-size:13px}
+.btn.danger{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* Compteur principal */
+.hero{display:grid;gap:14px}
+.hero .say{font-family:var(--f-display);font-weight:500;font-size:clamp(20px,3.6vw,26px);line-height:1.25;margin:0;text-wrap:balance}
+.hero .say b{font-weight:700}
+.track{position:relative;height:22px;border-radius:11px;background:var(--sunk);display:flex;overflow:hidden}
+.track i{display:block;height:100%}
+.track .w{background:var(--work)}
+.track .p{background:repeating-linear-gradient(135deg,var(--accent) 0 5px,var(--accent-soft) 5px 10px)}
+.scale{display:flex;justify-content:space-between;font:12px var(--f-mono);color:var(--muted);margin-top:-8px}
+.trio{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.trio div{border-radius:8px;padding:10px 12px;background:var(--sunk)}
+.trio .v{font-family:var(--f-display);font-weight:700;font-size:26px;line-height:1.1}
+.trio .k{font-size:13px;color:var(--muted);display:flex;align-items:center;gap:6px}
+.sw{width:10px;height:10px;border-radius:3px;display:inline-block;flex:none}
+.sw.w{background:var(--work)} .sw.p{background:repeating-linear-gradient(135deg,var(--accent) 0 2px,var(--accent-soft) 2px 4px)} .sw.m{background:var(--surface);border:1px solid var(--muted)}
+@media (max-width:520px){.trio .v{font-size:21px}}
+
+/* Courbe */
+.chart svg{width:100%;height:auto;display:block}
+.chart text{fill:var(--muted);font:11px var(--f-mono)}
+
+/* Listes */
+.list{display:grid}
+.item{display:grid;grid-template-columns:96px 1fr auto;gap:12px;align-items:center;padding:11px 0;border-top:1px solid var(--line)}
+.item:first-child{border-top:0}
+.item .d{font:13px/1.3 var(--f-mono);color:var(--muted)}
+.item .d b{display:block;color:var(--ink);font-weight:500;font-size:14px}
+.item .e{min-width:0}
+.item .e strong{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.item .e span{font-size:13px;color:var(--muted)}
+.item .h{text-align:right;font-family:var(--f-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.item .h small{display:block;color:var(--muted);font-size:12px}
+.item .acts{grid-column:2/-1;display:flex;gap:4px;flex-wrap:wrap;margin-top:-4px}
+.item.booked{background:linear-gradient(90deg,var(--accent-soft),transparent 70%);border-radius:6px;padding-left:8px;padding-right:8px}
+.item.out{opacity:.55}
+.empty{padding:28px 12px;text-align:center;color:var(--muted)}
+.empty strong{display:block;color:var(--ink);font-family:var(--f-display);font-size:18px;margin-bottom:4px}
+
+/* Formulaires */
+label.f{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted);font-weight:500;min-width:0}
+input,select,textarea{font:15px var(--f-body);color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:9px 11px;width:100%;min-width:0}
+input:focus,select:focus,textarea:focus{border-color:var(--accent);outline:none}
+input[type=checkbox]{width:auto}
+.fgrid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(min(100%,170px),1fr))}
+.fgrid .wide{grid-column:1/-1}
+.check{display:flex;gap:10px;align-items:flex-start;font-size:14px;color:var(--ink);padding:10px 12px;border-radius:8px;background:var(--sunk);cursor:pointer}
+.check input{margin-top:3px}
+.check small{display:block;color:var(--muted);font-size:12px}
+details.more{border-top:1px solid var(--line);padding-top:10px}
+details.more>summary{cursor:pointer;color:var(--muted);font-size:14px;font-weight:500;list-style:none}
+details.more>summary::before{content:"▸ ";}
+details.more[open]>summary::before{content:"▾ ";}
+details.more>div{margin-top:12px;display:grid;gap:12px}
+dialog{border:1px solid var(--line);border-radius:14px;background:var(--surface);color:var(--ink);padding:0;width:min(560px,calc(100vw - 24px));max-height:calc(100vh - 32px)}
+dialog::backdrop{background:rgba(10,12,20,.55)}
+dialog .dh{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--surface);z-index:1}
+dialog .db{padding:18px;display:grid;gap:14px}
+dialog .df{display:flex;gap:8px;padding:14px 18px;border-top:1px solid var(--line);position:sticky;bottom:0;background:var(--surface)}
+.calc table{border-collapse:collapse;width:100%;font-size:13px}
+.calc th{font-size:11px;color:var(--muted);text-align:left;font-weight:600;padding:2px 4px}
+.calc td{padding:3px}
+.calc input{padding:5px 6px;font-size:13px}
+.drop{border:2px dashed var(--line);border-radius:var(--r);padding:26px 16px;text-align:center;background:var(--surface);cursor:pointer;display:block}
+.drop.over,.drop:hover{border-color:var(--accent)}
+.drop strong{font-family:var(--f-display);font-size:18px;display:block}
+.draft{border:1px solid var(--line);border-left:4px solid var(--warn);border-radius:var(--r);background:var(--surface);padding:14px;display:grid;gap:12px}
+.draft.added{border-left-color:var(--good)}
+pre.raw{white-space:pre-wrap;font:12px/1.45 var(--f-mono);max-height:200px;overflow:auto;background:var(--sunk);padding:10px;border-radius:6px;margin:8px 0 0}
+.bigres{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,140px),1fr));gap:10px}
+.bigres div{background:var(--sunk);border-radius:8px;padding:12px}
+.bigres .v{font-family:var(--f-display);font-weight:700;font-size:26px;line-height:1.1}
+.bigres .v.acc{color:var(--accent)}
+.formula{font-family:var(--f-mono);font-size:12px;background:var(--sunk);padding:10px 12px;border-radius:6px;overflow-x:auto}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:8px;font-size:14px;z-index:50;max-width:calc(100vw - 32px)}
+.ex{font-size:11px;font-weight:600;color:var(--warn);text-transform:uppercase;letter-spacing:.06em}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+  <header class="top">
+    <h1>Carnet <span>d'intermittent</span></h1>
+    <div class="status" id="status"><span class="dot"></span><span>Chargement…</span></div>
+  </header>
+
+  <nav class="tabs" role="tablist">
+    <button role="tab" data-tab="accueil" aria-selected="true">Mes 507 h</button>
+    <button role="tab" data-tab="contrats" aria-selected="false">Contrats</button>
+    <button role="tab" data-tab="indemnites" aria-selected="false">Indemnités</button>
+    <button role="tab" data-tab="reglages" aria-selected="false">Réglages</button>
+  </nav>
+
+  <!-- ACCUEIL -->
+  <section data-panel="accueil">
+    <div class="panel hero">
+      <div class="row"><span class="label" id="h-label">Vers les 507 heures</span><span class="spacer"></span><span class="pill acc" id="h-anniv"></span></div>
+      <p class="say" id="h-say"></p>
+      <div class="track" aria-hidden="true"><i class="w" id="h-tw"></i><i class="p" id="h-tp"></i></div>
+      <div class="scale"><span>0 h</span><span>507 h</span></div>
+      <div class="trio">
+        <div><div class="k"><span class="sw w"></span>Travaillé</div><div class="v num" id="h-done">0 h</div></div>
+        <div><div class="k"><span class="sw p"></span>Booké</div><div class="v num" id="h-booked">0 h</div></div>
+        <div><div class="k"><span class="sw m"></span>Il manque</div><div class="v num" id="h-left">507 h</div></div>
+      </div>
+      <p class="hint" id="h-rate"></p>
+      <div class="row">
+        <button class="btn primary" data-add="done">+ Contrat travaillé</button>
+        <button class="btn" data-add="booked">+ Date bookée</button>
+      </div>
+    </div>
+
+    <div class="panel chart">
+      <div class="row" style="margin-bottom:6px"><h3>Progression</h3><span class="spacer"></span><span class="hint" id="c-range"></span></div>
+      <div id="h-chart"></div>
+    </div>
+
+    <div class="panel">
+      <div class="row" style="margin-bottom:4px"><h3>Dates bookées</h3><span class="spacer"></span><button class="btn ghost" data-add="booked">+ Ajouter</button></div>
+      <div class="list" id="h-booked-list"></div>
+    </div>
+  </section>
+
+  <!-- CONTRATS -->
+  <section data-panel="contrats" hidden>
+    <div class="row">
+      <h2>Contrats</h2><span class="spacer"></span>
+      <button class="btn" id="btn-import">Importer un PDF</button>
+      <button class="btn primary" data-add="done">+ Ajouter</button>
+    </div>
+
+    <div class="panel" id="import-panel" hidden>
+      <div class="row" style="margin-bottom:10px"><h3>Importer</h3><span class="spacer"></span><button class="btn ghost" id="import-close">Fermer</button></div>
+      <label class="drop" id="drop" for="pdf-in">
+        <strong>Déposer des PDF ici</strong>
+        <span class="hint">AEM, attestations GUSO, bulletins de paie · ou cliquez pour choisir</span>
+        <input type="file" id="pdf-in" accept="application/pdf,.pdf" multiple hidden>
+      </label>
+      <details class="more" style="margin-top:12px"><summary>Coller un tableau depuis guso.fr</summary>
+        <div>
+          <textarea id="paste" rows="4" placeholder="Copiez le tableau de vos déclarations sur guso.fr et collez-le ici"></textarea>
+          <div class="row"><span class="spacer"></span><button class="btn" id="paste-go">Analyser</button></div>
+        </div>
+      </details>
+    </div>
+    <div id="drafts" style="display:grid;gap:12px"></div>
+
+    <input id="search" type="search" placeholder="Rechercher un employeur…">
+
+    <div class="panel" id="list-booked-wrap">
+      <div class="row" style="margin-bottom:4px"><h3>À venir (bookés)</h3><span class="spacer"></span><span class="hint num" id="sum-booked"></span></div>
+      <div class="list" id="list-booked"></div>
+    </div>
+    <div class="panel">
+      <div class="row" style="margin-bottom:4px"><h3>Travaillés</h3><span class="spacer"></span><span class="hint num" id="sum-done"></span></div>
+      <div class="list" id="list-done"></div>
+    </div>
+    <div class="row">
+      <button class="btn ghost" id="btn-csv">Exporter en CSV</button>
+      <button class="btn ghost" id="btn-backup">Sauvegarder</button>
+      <label class="btn ghost" for="restore">Restaurer une sauvegarde<input type="file" id="restore" accept=".json,application/json" hidden></label>
+    </div>
+    <div id="export-box" hidden class="panel">
+      <p class="hint">Copiez le contenu ci-dessous :</p>
+      <textarea id="export-text" rows="6" style="font-family:var(--f-mono);font-size:12px;margin-top:8px"></textarea>
+      <div class="row" style="margin-top:8px"><button class="btn" id="btn-copy">Copier</button></div>
+    </div>
+  </section>
+
+  <!-- INDEMNITES -->
+  <section data-panel="indemnites" hidden>
+    <h2>Indemnités France Travail</h2>
+    <div class="panel" style="display:grid;gap:12px">
+      <div class="fgrid">
+        <label class="f">Ma situation<select id="s-situation">
+          <option value="indemnise">Intermittent indemnisé (annexe 8 ou 10)</option>
+          <option value="ouverture">Droits pas encore ouverts</option>
+          <option value="general">Indemnisé au régime général</option>
+          <option value="formation">En formation (AREF)</option></select></label>
+        <label class="f">Allocation journalière de ma notification (€)<input id="s-ajnotif" type="number" min="0" step="0.01" inputmode="decimal" placeholder="ex. 62,40"></label>
+      </div>
+      <p class="hint" id="sit-help"></p>
+    </div>
+    <div class="panel" style="display:grid;gap:14px">
+      <h3>Mon allocation par jour</h3>
+      <div class="bigres">
+        <div><div class="label" id="i-aj-label">Par jour (brut)</div><div class="v acc num" id="i-aj">—</div></div>
+        <div><div class="label">Mois sans travail</div><div class="v num" id="i-month">—</div></div>
+      </div>
+      <p class="hint" id="i-basis"></p>
+      <details class="more" id="i-details"><summary>Estimation à partir de mes contrats : voir le calcul</summary>
+        <div>
+          <div class="fgrid">
+            <label class="f">Annexe<select id="i-annexe"><option value="8">8 · technicien</option><option value="10">10 · artiste</option></select></label>
+            <label class="f">Salaires bruts (12 mois)<input id="i-sr" type="number" min="0" step="0.01" inputmode="decimal"></label>
+            <label class="f">Heures travaillées<input id="i-nht" type="number" min="0" step="0.5" inputmode="decimal"></label>
+          </div>
+          <div class="formula" id="i-formula"></div>
+          <div><button class="btn ghost" id="i-reset">↺ Reprendre mes contrats</button></div>
+        </div>
+      </details>
+    </div>
+    <div class="panel" style="display:grid;gap:14px">
+      <h3>Estimer un mois</h3>
+      <div class="fgrid">
+        <label class="f">Mois<input id="m-month" type="month"></label>
+        <label class="f">Heures travaillées ce mois<input id="m-hours" type="number" min="0" step="0.5" inputmode="decimal"></label>
+        <label class="f">Salaires bruts ce mois (€)<input id="m-sal" type="number" min="0" step="0.01" inputmode="decimal"></label>
+      </div>
+      <div class="bigres">
+        <div><div class="label">Allocation brute</div><div class="v acc num" id="m-alloc">—</div></div>
+        <div><div class="label">Nette estimée</div><div class="v num" id="m-net">—</div></div>
+        <div><div class="label">Jours payés</div><div class="v num" id="m-ji">—</div></div>
+      </div>
+      <p class="hint" id="m-explain"></p>
+    </div>
+    <p class="hint">Estimation indicative : franchises et délai d'attente ne sont pas pris en compte. Comparez avec votre espace France Travail.</p>
+  </section>
+
+  <!-- REGLAGES -->
+  <section data-panel="reglages" hidden>
+    <h2>Réglages</h2>
+    <div class="panel" style="display:grid;gap:12px">
+      <div class="fgrid">
+        <label class="f">Mon annexe<select id="s-annexe"><option value="8">Annexe 8 · technicien</option><option value="10">Annexe 10 · artiste</option></select></label>
+        <label class="f">Ma date anniversaire<input id="s-anniv" type="date"></label>
+      </div>
+      <p class="hint">La date anniversaire figure sur votre notification de droits France Travail. Sans elle, le calcul porte sur les 12 derniers mois.</p>
+      <details class="more"><summary>Barèmes de calcul</summary>
+        <div>
+          <div class="fgrid">
+            <label class="f">AJ minimale (€)<input id="p-ajmin" type="number" step="0.01"></label>
+            <label class="f">Plancher annexe 8 (€)<input id="p-pl8" type="number" step="0.01"></label>
+            <label class="f">Plancher annexe 10 (€)<input id="p-pl10" type="number" step="0.01"></label>
+            <label class="f">Plafond Sécu mensuel (€)<input id="p-pmss" type="number" step="1"></label>
+            <label class="f">Prélèvements (%)<input id="p-net" type="number" step="0.1"></label>
+            <label class="f">Plafond heures de formation<input id="p-capForm" type="number" step="1"></label>
+            <label class="f">Heures par jour d'arrêt maladie<input id="p-maladieH" type="number" step="0.5"></label>
+          </div>
+          <label class="check"><input id="s-50" type="checkbox"><span>J'ai 50 ans ou plus<small>Heures d'enseignement retenues jusqu'à 120 h au lieu de 70 h</small></span></label>
+          <div><button class="btn ghost" id="p-default">Rétablir les valeurs par défaut</button></div>
+        </div>
+      </details>
+    </div>
+    <div class="panel" style="display:grid;gap:10px">
+      <h3>Mes données</h3>
+      <p class="hint" id="s-storage"></p>
+      <div class="row"><button class="btn" id="s-sample">Charger des exemples</button><button class="btn danger" id="s-clear-ex">Supprimer les exemples</button></div>
+    </div>
+  </section>
+</div>
+
+<dialog id="dlg">
+  <form id="cform" method="dialog">
+    <div class="dh"><h3 id="dlg-title">Nouveau contrat</h3><button type="button" class="btn ghost" data-close aria-label="Fermer">✕</button></div>
+    <div class="db">
+      <div class="fgrid">
+        <label class="f">Type<select id="f-kind"><option value="travail">Contrat de travail</option><option value="formation">Formation suivie</option><option value="maladie">Arrêt maladie / maternité</option><option value="enseignement">Enseignement donné</option></select></label>
+        <label class="f" id="f-job-wrap">Poste<input id="f-job" placeholder="Technicien son, comédienne…"></label>
+      </div>
+      <p class="hint" id="f-kind-help" hidden></p>
+      <label class="f"><span id="f-emp-label">Employeur</span><input id="f-emp" required placeholder="Nom de la structure"></label>
+      <div class="fgrid">
+        <label class="f">Du<input id="f-start" type="date" required></label>
+        <label class="f">Au<input id="f-end" type="date" required></label>
+        <label class="f">Heures travaillées<input id="f-hours" type="number" min="0" step="0.25" inputmode="decimal" placeholder="ex. 10"></label>
+        <label class="f">Salaire brut (€)<input id="f-brut" type="number" min="0" step="0.01" inputmode="decimal" placeholder="ex. 175"></label>
+      </div>
+      <label class="check"><input id="f-planned" type="checkbox"><span>Date bookée, pas encore travaillée<small>Comptée dans le prévisionnel uniquement</small></span></label>
+      <details class="more"><summary>Calculer mes heures jour par jour</summary>
+        <div class="calc">
+          <table><thead><tr><th>Date</th><th>Début</th><th>Fin</th><th>Pause (min)</th><th>Total</th><th></th></tr></thead><tbody id="t-body"></tbody></table>
+          <div class="row"><button type="button" class="btn small" id="t-add">+ Journée</button><span class="spacer"></span><span class="hint num" id="t-sum"></span><button type="button" class="btn small primary" id="t-use" hidden>Utiliser ce total</button></div>
+        </div>
+      </details>
+      <details class="more"><summary>Plus d'options</summary>
+        <div class="fgrid">
+          <label class="f">Annexe<select id="f-annexe"><option value="8">Annexe 8</option><option value="10">Annexe 10</option></select></label>
+          <label class="f">N° de déclaration<input id="f-ref"></label>
+          <label class="check"><input id="f-aem" type="checkbox"><span>Attestation (AEM) reçue</span></label>
+          <label class="f wide">Notes<textarea id="f-notes" rows="2"></textarea></label>
+        </div>
+      </details>
+    </div>
+    <div class="df">
+      <button type="button" class="btn danger" id="f-del" hidden>Supprimer</button>
+      <span class="spacer"></span>
+      <button type="button" class="btn" data-close>Annuler</button>
+      <button type="submit" class="btn primary">Enregistrer</button>
+    </div>
+  </form>
+</dialog>
+<div class="toast" id="toast" hidden></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js"></script>
+<script>
+"use strict";
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const eur=n=>(isFinite(n)?n:0).toLocaleString("fr-FR",{style:"currency",currency:"EUR"});
+const nf=(n,d=0)=>(isFinite(n)?n:0).toLocaleString("fr-FR",{maximumFractionDigits:d});
+const num=v=>{const x=parseFloat(String(v??"").replace(/\s/g,"").replace(",","."));return isFinite(x)?x:0};
+const parseD=s=>{if(!s)return null;const[y,m,d]=s.split("-").map(Number);return new Date(y,m-1,d)};
+const iso=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+const fmtD=s=>{const d=parseD(s);return d?d.toLocaleDateString("fr-FR",{day:"numeric",month:"short"}):"—"};
+const fmtY=s=>{const d=parseD(s);return d?d.getFullYear():""};
+const longD=d=>d.toLocaleDateString("fr-FR",{day:"numeric",month:"long",year:"numeric"});
+const addMonths=(d,n)=>{const x=new Date(d);x.setMonth(x.getMonth()+n);return x};
+const DAY=864e5, today0=()=>new Date(new Date().setHours(0,0,0,0));
+const uid=()=>"c"+Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function toast(m){const t=$("#toast");t.textContent=m;t.hidden=false;clearTimeout(toast._t);toast._t=setTimeout(()=>t.hidden=true,2600)}
+
+/* ---------- État ---------- */
+const DEFAULT_PARAMS={ajmin:31.36,pl8:38,pl10:44,pmss:4005,cachet:12,net:7.4,capForm:338,maladieH:5};
+const state={contracts:[],settings:{annexe:"8",anniv:"",over50:false,situation:"indemnise",ajNotif:0,params:{...DEFAULT_PARAMS}},mode:"init"};
+const P=()=>({...DEFAULT_PARAMS,...(state.settings.params||{})});
+/* Heures d'un contrat : une seule valeur. Les anciens contrats saisis en cachets restent pris en compte. */
+const hoursOf=c=>num(c.hours)+num(c.cachets)*(num(c.hpc)||P().cachet);
+
+/* ---------- Stockage ---------- */
+const LS="carnet-intermittent-v1";
+const store={db:null,base:null,
+  lsLoad(){try{const j=JSON.parse(localStorage.getItem(LS)||"null");if(j){state.contracts=j.contracts||[];state.settings={...state.settings,...(j.settings||{})}}}catch(e){}},
+  lsSave(){try{localStorage.setItem(LS,JSON.stringify({contracts:state.contracts,settings:state.settings}))}catch(e){}},
+  async saveContract(c){const i=state.contracts.findIndex(x=>x.id===c.id);if(i>=0)state.contracts[i]=c;else state.contracts.push(c);renderAll();
+    if(this.db){try{await this.db.collection(this.base).doc(c.id).set(c)}catch(e){toast("Échec de l'enregistrement, réessayez")}}else this.lsSave()},
+  async deleteContract(id){state.contracts=state.contracts.filter(x=>x.id!==id);renderAll();
+    if(this.db){try{await this.db.collection(this.base).doc(id).delete()}catch(e){toast("Échec de la suppression")}}else this.lsSave()},
+  _st:null,
+  saveSettings(){clearTimeout(this._st);this._st=setTimeout(async()=>{if(this.db){try{await this.db.collection(this.base).doc("settings").set({kind:"settings",...state.settings})}catch(e){}}else this.lsSave()},600)}
+};
+function setStatus(ok,t){$("#status").innerHTML=`<span class="dot ${ok?"ok":""}"></span><span>${esc(t)}</span>`;
+  $("#s-storage").textContent=ok?"Vos contrats sont enregistrés dans votre espace privé : vous seul y avez accès, sur tous vos appareils.":"Vos contrats sont enregistrés dans ce navigateur uniquement. Faites une sauvegarde de temps en temps."}
+async function initStorage(){
+  const fallback=()=>{if(state.mode!=="init")return;state.mode="local";store.lsLoad();setStatus(false,"Enregistré sur cet appareil");loadSettingsForm();renderAll()};
+  if(!window.claude||!window.claude.use){fallback();return}
+  const timer=setTimeout(fallback,4000);
+  try{const[db,user]=await Promise.all([claude.use("db"),claude.use("user")]);const id=user?await user.id():null;
+    clearTimeout(timer);if(!db||!id){fallback();return}if(state.mode==="local")return;
+    state.mode="db";store.db=db;store.base="data/users/"+id;setStatus(true,"Synchronisé");let first=true;
+    db.collection(store.base).onSnapshot(snap=>{const cs=[];let st=null;
+      snap.docs.forEach(d=>{const v=d.data();if(!v)return;if(d.id==="settings")st=v;else cs.push({...v,id:d.id})});
+      state.contracts=cs;if(st){const{kind,...rest}=st;state.settings={...state.settings,...rest,params:{...DEFAULT_PARAMS,...(rest.params||{})}}}
+      if(first){first=false;loadSettingsForm()}renderAll()},()=>setStatus(false,"Connexion perdue"));
+  }catch(e){clearTimeout(timer);fallback()}
+}
+
+/* ---------- Calculs ---------- */
+function refWindow(){const a=parseD(state.settings.anniv),end=a||today0(),start=addMonths(end,-12);start.setDate(start.getDate()+1);return{start,end,hasAnniv:!!a}}
+/* Jusqu'à la date anniversaire, ou à défaut jusqu'à la dernière date bookée */
+function projWindow(){const a=parseD(state.settings.anniv);if(a)return refWindow();
+  const last=state.contracts.filter(c=>c.planned).map(c=>parseD(c.end)||parseD(c.start)).filter(Boolean).sort((x,y)=>y-x)[0];
+  const end=last&&last>today0()?last:today0(),start=addMonths(end,-12);start.setDate(start.getDate()+1);return{start,end,hasAnniv:false}}
+const endOf=c=>parseD(c.end)||parseD(c.start);
+const inWindow=(c,w)=>{const e=endOf(c);return e&&e>=w.start&&e<=w.end};
+/* Heures retenues : travail + maladie, enseignement et formation plafonnés */
+function calcHours(list){const k={travail:0,enseignement:0,formation:0,maladie:0};list.forEach(c=>{k[k[c.kind]!==undefined?c.kind:"travail"]+=hoursOf(c)});
+  const capE=state.settings.over50?120:70,capF=P().capForm;
+  return{total:k.travail+k.maladie+Math.min(k.enseignement,capE)+Math.min(k.formation,capF),k,capE,capF}}
+function totals(w=refWindow()){
+  const done=state.contracts.filter(c=>!c.planned&&inWindow(c,w)),h=calcHours(done);
+  return{list:done,hours:h.total,detail:h,sr:done.reduce((a,c)=>a+num(c.brut),0)};
+}
+function forecast(){
+  const w=projWindow(),d=totals(w),pl=state.contracts.filter(c=>c.planned&&inWindow(c,w));
+  const total=calcHours([...d.list,...pl]).total;
+  return{w,done:d.hours,booked:total-d.hours,total,list:pl};
+}
+function computeAJ(annexe,SR,NHT){
+  const p=P(),m=p.ajmin;let A,B,C,floor,detail;
+  if(String(annexe)==="8"){A=m*(0.42*Math.min(SR,14400)+0.05*Math.max(0,SR-14400))/5000;B=m*(0.26*Math.min(NHT,720)+0.08*Math.max(0,NHT-720))/507;C=m*0.40;floor=p.pl8;
+    detail=`A = ${nf(m,2)} × (0,42 × SR jusqu'à 14 400 € + 0,05 × au-delà) ÷ 5 000<br>B = ${nf(m,2)} × (0,26 × heures jusqu'à 720 + 0,08 × au-delà) ÷ 507<br>C = ${nf(m,2)} × 0,40`}
+  else{A=m*(0.36*Math.min(SR,13700)+0.05*Math.max(0,SR-13700))/5000;B=m*(0.26*Math.min(NHT,690)+0.08*Math.max(0,NHT-690))/507;C=m*0.70;floor=p.pl10;
+    detail=`A = ${nf(m,2)} × (0,36 × SR jusqu'à 13 700 € + 0,05 × au-delà) ÷ 5 000<br>B = ${nf(m,2)} × (0,26 × heures jusqu'à 690 + 0,08 × au-delà) ÷ 507<br>C = ${nf(m,2)} × 0,70`}
+  const raw=A+B+C;return{A,B,C,raw,floor,aj:Math.max(raw,floor),floored:raw<floor,detail};
+}
+function monthShare(c,y,m){const s=parseD(c.start),e=endOf(c);if(!s)return 0;const ms=new Date(y,m,1),me=new Date(y,m+1,0);
+  const a=s>ms?s:ms,b=e<me?e:me;if(b<a)return 0;return(Math.round((b-a)/DAY)+1)/(Math.round((e-s)/DAY)+1)}
+
+function currentAJ(){const n=num(state.settings.ajNotif);if(n>0)return{aj:n,source:"notif"};
+  if(state.settings.situation==="general")return{aj:0,source:"none"};
+  const t=totals();return{aj:computeAJ(state.settings.annexe,t.sr,t.hours).aj,source:"estim"}}
+const KINDS={travail:"Contrat",enseignement:"Enseignement donné",formation:"Formation suivie",maladie:"Arrêt maladie / maternité"};
+/* ---------- Accueil ---------- */
+function renderHome(){
+  const F=forecast(),w=F.w,t0=today0();
+  const pw=Math.min(100,F.done/507*100),pp=Math.max(0,Math.min(100-pw,F.booked/507*100));
+  $("#h-tw").style.width=pw+"%";$("#h-tp").style.width=pp+"%";
+  $("#h-done").textContent=nf(F.done)+" h";$("#h-booked").textContent=nf(F.booked)+" h";
+  const left=Math.max(0,507-F.total);$("#h-left").textContent=left?nf(Math.ceil(left))+" h":"0 h";
+  const nb=F.list.length,endTxt=w.hasAnniv?`le ${longD(w.end)}`:"";
+  let say;
+  if(F.done>=507)say=`<b>C'est bon :</b> vous avez déjà ${nf(F.done)} h sur la période.`;
+  else if(!nb)say=`Vous avez <b>${nf(F.done)} h</b>. Il vous manque <b>${nf(Math.ceil(507-F.done))} h</b>${endTxt?` d'ici ${endTxt}`:""}.`;
+  else if(F.total>=507)say=`Avec vos ${nb} date${nb>1?"s":""} bookée${nb>1?"s":""}, vous atteindrez <b>${nf(F.total)} h</b> : <b>les 507 h sont couvertes</b>.`;
+  else say=`Avec vos ${nb} date${nb>1?"s":""} bookée${nb>1?"s":""}, vous serez à <b>${nf(F.total)} h</b>${endTxt?` ${endTxt}`:""}. Il restera <b>${nf(Math.ceil(left))} h</b> à trouver.`;
+  const sit=state.settings.situation;
+  $("#h-label").textContent=sit==="ouverture"?"Pour ouvrir mes droits : 507 heures":sit==="general"?"Pour (re)passer en intermittence : 507 heures":"Pour renouveler mes droits : 507 heures";
+  $("#h-say").innerHTML=say;
+  if(w.hasAnniv){const days=Math.round((w.end-t0)/DAY);$("#h-anniv").textContent=days>=0?`J-${days} · ${w.end.toLocaleDateString("fr-FR")}`:"Date anniversaire passée"}
+  else $("#h-anniv").innerHTML=`<a href="#reglages" data-go="reglages" style="color:inherit">Indiquer ma date anniversaire</a>`;
+  const months=Math.max(0,(w.end-t0)/DAY/30.44);
+  $("#h-rate").textContent=left&&w.hasAnniv?(months>=.5?`Soit environ ${nf(Math.ceil(left/months))} h par mois à trouver d'ici là.`:"La date anniversaire est trop proche pour combler l'écart."):"";
+  renderCurve(F);
+  const up=state.contracts.filter(c=>c.planned).sort((a,b)=>(a.start||"").localeCompare(b.start||""));
+  let cum=F.done,crossed=F.done>=507;
+  $("#h-booked-list").innerHTML=up.length?up.map(c=>{const inW=inWindow(c,w);let tag="";
+    if(inW){cum+=hoursOf(c);if(!crossed&&cum>=507){crossed=true;tag=`<span class="pill good">507 h atteintes</span>`}else tag=`<small>cumul ${nf(cum)} h</small>`}else tag=`<small>après la date anniversaire</small>`;
+    return itemHTML(c,tag,inW)}).join(""):`<div class="empty"><strong>Aucune date bookée</strong>Ajoutez vos dates confirmées pour voir si vous atteindrez 507 h à temps.</div>`;
+}
+function renderCurve(F){
+  const w=F.w,t0=today0(),W=720,H=230,pl=44,pr=16,pt=14,pb=26;
+  const x=d=>pl+(Math.min(Math.max(d,w.start),w.end)-w.start)/(w.end-w.start)*(W-pl-pr);
+  const ymax=Math.ceil(Math.max(560,F.total*1.08)/100)*100,y=v=>H-pb-(v/ymax)*(H-pb-pt);
+  const ev=(list)=>list.map(c=>({d:endOf(c),h:c.kind==="enseignement"?hoursOf(c):hoursOf(c)})).sort((a,b)=>a.d-b.d);
+  const done=ev(state.contracts.filter(c=>!c.planned&&inWindow(c,w))),pl2=ev(F.list);
+  // escalier travaillé
+  let v=0,path=`M${x(w.start)},${y(0)}`;done.forEach(e=>{path+=` H${x(e.d)} V${y(Math.min(v+=e.h,F.done))}`});v=F.done;
+  const nowX=x(t0>w.end?w.end:t0);path+=` H${nowX}`;
+  const area=path+` V${y(0)} Z`;
+  let bp=`M${nowX},${y(v)}`;pl2.forEach(e=>{bp+=` H${x(e.d)} V${y(v+=e.h)}`});bp+=` H${x(w.end)}`;
+  let g="";for(let k=0;k<=ymax;k+=100){g+=`<line x1="${pl}" x2="${W-pr}" y1="${y(k)}" y2="${y(k)}" stroke="var(--line)"/><text x="${pl-6}" y="${y(k)+4}" text-anchor="end">${k}</text>`}
+  let xt="";const m0=new Date(w.start.getFullYear(),w.start.getMonth()+1,1);for(let d=m0;d<=w.end;d=addMonths(d,1)){xt+=`<text x="${x(d)}" y="${H-8}" text-anchor="middle">${d.toLocaleDateString("fr-FR",{month:"short"}).replace(".","").slice(0,4)}</text>`}
+  const ok507=`<line x1="${pl}" x2="${W-pr}" y1="${y(507)}" y2="${y(507)}" stroke="var(--good)" stroke-width="1.5" stroke-dasharray="6 4"/><text x="${pl+6}" y="${y(507)-6}" style="fill:var(--good);font-weight:500">507 h</text>`;
+  const today=t0>=w.start&&t0<=w.end?`<line x1="${nowX}" x2="${nowX}" y1="${pt}" y2="${H-pb}" stroke="var(--muted)" stroke-dasharray="2 3"/><text x="${nowX}" y="${pt+8}" text-anchor="${nowX>W-90?"end":"middle"}">aujourd'hui</text>`:"";
+  const endLbl=`<circle cx="${x(w.end)}" cy="${y(F.total)}" r="4" fill="${F.total>=507?"var(--good)":"var(--accent)"}"/><text x="${x(w.end)-8}" y="${y(F.total)-8}" text-anchor="end" style="fill:var(--ink);font-weight:500">${nf(F.total)} h</text>`;
+  $("#h-chart").innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Cumul des heures sur la période">${g}${xt}${ok507}
+    <path d="${area}" fill="var(--work-soft)"/><path d="${path}" fill="none" stroke="var(--work)" stroke-width="2.5"/>
+    ${F.list.length?`<path d="${bp}" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-dasharray="7 5"/>`:""}${today}${endLbl}</svg>`;
+  $("#c-range").textContent=`${w.start.toLocaleDateString("fr-FR")} → ${w.end.toLocaleDateString("fr-FR")}`;
+}
+
+/* ---------- Contrats ---------- */
+function itemHTML(c,right,inW=true){
+  const same=c.start===c.end,h=hoursOf(c);
+  const tags=[c.example?'<span class="ex">exemple</span>':"",!c.planned&&!c.aem&&(!c.kind||c.kind==="travail"||c.kind==="enseignement")?'<span class="pill warn">AEM à récupérer</span>':""].filter(Boolean).join(" ");
+  return`<div class="item ${c.planned?"booked":""} ${inW?"":"out"}">
+    <div class="d"><b>${fmtD(c.start)}</b>${same?fmtY(c.start):"→ "+fmtD(c.end)}</div>
+    <div class="e"><strong>${esc(c.employer)}</strong><span>${esc(c.job||"")}${c.kind&&c.kind!=="travail"?` · <b style="font-weight:600">${KINDS[c.kind]||""}</b>`:""}</span></div>
+    <div class="h">${nf(h,2)} h${right?right:num(c.brut)?`<small>${eur(num(c.brut))}</small>`:""}</div>
+    <div class="acts">${tags}${c.planned?`<button class="btn ghost small" data-worked="${esc(c.id)}">✓ Travaillé</button>`:""}<button class="btn ghost small" data-edit="${esc(c.id)}">Modifier</button></div></div>`;
+}
+function renderContracts(){
+  const q=($("#search").value||"").toLowerCase(),w=refWindow();
+  const m=c=>!q||(c.employer+" "+(c.job||"")).toLowerCase().includes(q);
+  const bk=state.contracts.filter(c=>c.planned&&m(c)).sort((a,b)=>(a.start||"").localeCompare(b.start||""));
+  const dn=state.contracts.filter(c=>!c.planned&&m(c)).sort((a,b)=>(b.start||"").localeCompare(a.start||""));
+  $("#list-booked-wrap").hidden=!bk.length;
+  $("#list-booked").innerHTML=bk.map(c=>itemHTML(c)).join("");
+  $("#sum-booked").textContent=bk.length?nf(bk.reduce((a,c)=>a+hoursOf(c),0))+" h":"";
+  $("#list-done").innerHTML=dn.length?dn.map(c=>itemHTML(c,"",inWindow(c,w))).join(""):
+    `<div class="empty"><strong>${q?"Aucun résultat":"Aucun contrat"}</strong>${q?"":`Ajoutez un contrat ou importez une attestation PDF.<div class="row" style="justify-content:center;margin-top:12px"><button class="btn primary" data-add="done">+ Ajouter</button><button class="btn" data-sample>Voir des exemples</button></div>`}</div>`;
+  $("#sum-done").textContent=dn.length?`${nf(dn.reduce((a,c)=>a+hoursOf(c),0))} h · ${eur(dn.reduce((a,c)=>a+num(c.brut),0))}`:"";
+}
+
+/* ---------- Indemnités ---------- */
+let iDirty=false,mDirty=false;
+function fillIndem(){const t=totals();$("#i-annexe").value=state.settings.annexe;$("#i-sr").value=Math.round(t.sr*100)/100;$("#i-nht").value=Math.round(t.hours*100)/100}
+function fillMonth(){const v=$("#m-month").value;if(!v)return;const[y,m]=v.split("-").map(Number);let h=0,s=0;
+  state.contracts.forEach(c=>{const sh=monthShare(c,y,m-1);if(sh){h+=hoursOf(c)*sh;s+=num(c.brut)*sh}});
+  $("#m-hours").value=Math.round(h*100)/100;$("#m-sal").value=Math.round(s*100)/100}
+function renderIndem(){
+  const an=$("#i-annexe").value,sr=num($("#i-sr").value),nht=num($("#i-nht").value),r=computeAJ(an,sr,nht);
+  const sit=state.settings.situation,notif=num(state.settings.ajNotif),gen=sit==="general";
+  const HELP={indemnise:"Le montant exact figure sur votre notification de droits France Travail (courrier ou espace personnel). Sans lui, la page fait une estimation à partir de vos contrats.",
+    ouverture:"Vos droits ne sont pas encore ouverts : le montant affiché est une estimation de ce que vous toucheriez en ouvrant des droits avec vos contrats actuels.",
+    general:"Au régime général, l'allocation dépend de votre salaire journalier de référence, que cette page ne peut pas reconstituer : saisissez le montant de votre notification. Le compteur des 507 h vous indique quand vous pourrez basculer en intermittence.",
+    formation:"Pendant une formation validée par France Travail, l'allocation est versée sous forme d'AREF, en général du même montant que votre allocation. Les heures de formation suivie comptent dans les 507 h, dans une certaine limite (Réglages)."};
+  $("#sit-help").textContent=HELP[sit]||"";
+  let aj=notif>0?notif:gen?0:r.aj;
+  $("#i-aj-label").textContent=notif>0?"Par jour · notification":gen?"Par jour":"Par jour · estimation";
+  $("#i-aj").textContent=aj?eur(aj):"—";$("#i-month").textContent=aj?eur(aj*30):"—";
+  $("#i-details").hidden=gen;
+  $("#i-basis").textContent=notif>0?`Montant de votre notification. L'estimation d'après vos contrats donne ${eur(r.aj)}.`:
+    gen?"Saisissez le montant de votre notification pour estimer vos mois.":
+    `Estimation avec ${nf(nht)} h et ${eur(sr)} de salaires bruts sur 12 mois (annexe ${an}).`+(r.floored?` Montant minimum appliqué (${eur(r.floor)}).`:"")+" Saisissez le montant de votre notification pour un calcul exact.";
+  $("#i-formula").innerHTML=`AJ = A + B + C = ${nf(r.A,2)} + ${nf(r.B,2)} + ${nf(r.C,2)} = ${nf(r.raw,2)} €<br><span style="color:var(--muted)">${r.detail}</span>`;
+  const v=$("#m-month").value;if(!v)return;const[y,m]=v.split("-").map(Number),dim=new Date(y,m,0).getDate();
+  const h=num($("#m-hours").value),sal=num($("#m-sal").value);
+  if(!aj){$("#m-alloc").textContent="—";$("#m-net").textContent="—";$("#m-ji").textContent="—";$("#m-explain").textContent="Indiquez d'abord le montant de votre allocation journalière.";return}
+  let alloc,ji,txt;
+  if(gen){/* Régime général : 70 % du salaire brut du mois est déduit de l'allocation du mois */
+    alloc=Math.max(0,aj*dim-0.7*sal);ji=Math.min(dim,Math.floor(alloc/aj));alloc=ji*aj;
+    txt=(sal?`Régime général : 70 % de vos ${eur(sal)} de salaire sont déduits de l'allocation du mois. `:"Aucun salaire ce mois : tous les jours sont indemnisés. ")+"Le total salaire + allocation ne peut pas dépasser votre ancien salaire mensuel de référence (non vérifié ici). ";
+  }else{
+    const jni=Math.min(dim,an==="8"?Math.floor(h*1.4/8):Math.floor(h*1.3/10));ji=dim-jni;alloc=aj*ji;
+    const k=an==="8"?1.18:1.4,cap=k*P().pmss,capped=alloc>Math.max(0,cap-sal);if(capped)alloc=Math.max(0,cap-sal);
+    txt=(h?`${nf(h,1)} h travaillées retirent ${jni} jour${jni>1?"s":""} d'indemnisation (heures × ${an==="8"?"1,4 ÷ 8":"1,3 ÷ 10"}). `:"Aucune heure travaillée : tous les jours sont indemnisés. ")+(capped?`Allocation réduite car salaire + allocation dépassent ${eur(cap)}. `:"");
+    if(sit==="ouverture")txt="Si vos droits étaient ouverts : "+txt;
+  }
+  $("#m-alloc").textContent=eur(alloc);$("#m-net").textContent=eur(alloc*(1-P().net/100));$("#m-ji").textContent=`${ji} / ${dim}`;
+  $("#m-explain").textContent=txt+`Revenu total du mois : ${eur(sal+alloc)} brut.`;
+}
+
+/* ---------- Rendu global ---------- */
+function renderAll(){renderHome();renderContracts();if(!iDirty)fillIndem();if(!mDirty)fillMonth();renderIndem()}
+
+/* ---------- Dialogue contrat ---------- */
+let editing=null;
+function openContract(c,booked){
+  editing=c?c.id:null;const b=c?!!c.planned:!!booked;
+  $("#dlg-title").textContent=c?"Modifier":b?"Nouvelle date bookée":"Nouveau contrat travaillé";$("#f-del").hidden=!c;
+  const d=c||{annexe:state.settings.annexe,kind:"travail",start:b?"":iso(new Date()),end:b?"":iso(new Date()),planned:b};
+  $("#f-emp").value=d.employer||"";$("#f-job").value=d.job||"";$("#f-start").value=d.start||"";$("#f-end").value=d.end||"";
+  $("#f-hours").value=c?Math.round(hoursOf(c)*100)/100||"":"";$("#f-brut").value=d.brut||"";$("#f-planned").checked=!!d.planned;
+  $("#f-annexe").value=d.annexe||"8";$("#f-kind").value=d.kind||"travail";$("#f-ref").value=d.ref||"";$("#f-aem").checked=!!d.aem;$("#f-notes").value=d.notes||"";
+  $("#t-body").innerHTML="";(d.days||[]).forEach(addDay);sumDays();kindUI();$$("#dlg details").forEach(x=>x.open=false);
+  $("#dlg").showModal();
+}
+function addDay(r={}){const tr=document.createElement("tr");
+  tr.innerHTML=`<td><input type="date" value="${esc(r.date||$("#f-start").value||"")}"></td><td><input type="time" value="${esc(r.a||"09:00")}"></td><td><input type="time" value="${esc(r.b||"18:00")}"></td><td><input type="number" min="0" step="5" value="${esc(r.p??60)}" style="width:64px"></td><td class="num">—</td><td><button type="button" class="btn ghost small" aria-label="Retirer">✕</button></td>`;
+  tr.querySelector("button").onclick=()=>{tr.remove();sumDays()};tr.querySelectorAll("input").forEach(i=>i.addEventListener("input",sumDays));$("#t-body").appendChild(tr)}
+function readDays(){return[...$("#t-body").rows].map(tr=>{const i=tr.querySelectorAll("input");return{date:i[0].value,a:i[1].value,b:i[2].value,p:num(i[3].value),tr}})}
+function dayH(r){if(!r.a||!r.b)return 0;const[ah,am]=r.a.split(":").map(Number),[bh,bm]=r.b.split(":").map(Number);let m=(bh*60+bm)-(ah*60+am);if(m<=0)m+=1440;return Math.max(0,(m-r.p)/60)}
+function sumDays(){const ds=readDays();let t=0;ds.forEach(r=>{const h=dayH(r);t+=h;r.tr.cells[4].textContent=nf(h,2)+" h"});$("#t-use").hidden=!ds.length;$("#t-sum").textContent=ds.length?`Total ${nf(t,2)} h`:"";return t}
+$("#t-add").onclick=()=>{const ds=readDays(),last=ds[ds.length-1];let next=$("#f-start").value;if(last&&last.date){const d=parseD(last.date);d.setDate(d.getDate()+1);next=iso(d)}addDay({date:next,a:last?.a,b:last?.b,p:last?.p});sumDays()};
+$("#t-use").onclick=()=>{$("#f-hours").value=Math.round(sumDays()*100)/100;const ds=readDays().map(r=>r.date).filter(Boolean).sort();if(ds.length){$("#f-start").value=ds[0];$("#f-end").value=ds[ds.length-1]}toast("Heures reportées")};
+function kindUI(){const k=$("#f-kind").value,p=P();$("#f-job-wrap").style.visibility=k==="maladie"?"hidden":"visible";
+  $("#f-emp-label").textContent=k==="formation"?"Organisme de formation":k==="maladie"?"Intitulé":"Employeur";
+  $("#f-emp").placeholder=k==="maladie"?"Arrêt maladie":k==="formation"?"Nom de l'organisme":"Nom de la structure";
+  const H={formation:`Heures de formation financée (Afdas, France Travail…). Comptées dans les 507 h jusqu'à ${nf(p.capForm)} h (modifiable dans Réglages).`,
+    maladie:`Comptez ${nf(p.maladieH)} h par jour d'arrêt indemnisé (modifiable dans Réglages). Les heures sont calculées depuis les dates si la case est vide.`,
+    enseignement:`Heures d'enseignement données. Comptées jusqu'à ${state.settings.over50?120:70} h.`};
+  $("#f-kind-help").hidden=!H[k];$("#f-kind-help").textContent=H[k]||"";}
+function autoMaladie(){if($("#f-kind").value!=="maladie"||$("#f-hours").value)return;const s=parseD($("#f-start").value),e=parseD($("#f-end").value)||s;if(!s)return;
+  $("#f-hours").value=(Math.round((e-s)/DAY)+1)*P().maladieH}
+$("#f-kind").addEventListener("change",()=>{kindUI();autoMaladie()});$("#f-end").addEventListener("change",()=>{if($("#f-kind").value==="maladie"){$("#f-hours").value="";autoMaladie()}});
+$("#f-start").addEventListener("change",()=>{const s=$("#f-start").value;if(!$("#f-end").value||$("#f-end").value<s)$("#f-end").value=s;if(!editing&&parseD(s)>today0())$("#f-planned").checked=true});
+$("#cform").addEventListener("submit",e=>{e.preventDefault();
+  const emp=$("#f-emp").value.trim(),st=$("#f-start").value,en=$("#f-end").value||st;
+  if(!emp||!st){toast("Indiquez l'employeur et la date");return}if(en<st){toast("La date de fin est avant la date de début");return}
+  const old=state.contracts.find(x=>x.id===editing)||{};
+  const c={...old,id:editing||uid(),employer:emp,job:$("#f-job").value.trim(),start:st,end:en,hours:num($("#f-hours").value),cachets:0,hpc:0,
+    brut:num($("#f-brut").value),planned:$("#f-planned").checked,annexe:$("#f-annexe").value,kind:$("#f-kind").value,ref:$("#f-ref").value.trim(),
+    aem:$("#f-aem").checked,notes:$("#f-notes").value.trim(),days:readDays().map(({tr,...r})=>r),updated:Date.now()};
+  store.saveContract(c);$("#dlg").close();toast(c.planned?"Date bookée enregistrée":"Contrat enregistré")});
+let delArm=false;
+$("#f-del").onclick=()=>{if(!delArm){delArm=true;$("#f-del").textContent="Confirmer ?";setTimeout(()=>{delArm=false;$("#f-del").textContent="Supprimer"},3000);return}
+  delArm=false;$("#f-del").textContent="Supprimer";store.deleteContract(editing);$("#dlg").close();toast("Supprimé")};
+$$("[data-close]").forEach(b=>b.onclick=()=>$("#dlg").close());
+
+/* ---------- Import PDF / GUSO ---------- */
+if(window.pdfjsLib){try{pdfjsLib.GlobalWorkerOptions.workerSrc="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js"}catch(e){}}
+const DRE=/(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{2,4})/;
+const toIso=m=>{let y=+m[3];if(y<100)y+=2000;return`${y}-${String(+m[2]).padStart(2,"0")}-${String(+m[1]).padStart(2,"0")}`};
+const money=s=>num(String(s).replace(/\s| | /g,"").replace(/\.(?=\d{3}(\D|$))/g,""));
+async function pdfText(file){
+  const buf=await file.arrayBuffer();const doc=await pdfjsLib.getDocument({data:buf}).promise;let out="";
+  for(let p=1;p<=doc.numPages;p++){const tc=await(await doc.getPage(p)).getTextContent();
+    const its=tc.items.filter(it=>it.str&&it.str.trim()).map(it=>({x:it.transform[4],y:it.transform[5],s:it.str}));
+    its.sort((a,b)=>Math.abs(b.y-a.y)>3?b.y-a.y:a.x-b.x);
+    const lines=[];its.forEach(it=>{const L=lines[lines.length-1];if(L&&Math.abs(L.y-it.y)<=3){L.parts.push(it)}else lines.push({y:it.y,parts:[it]})});
+    lines.forEach(L=>{L.parts.sort((a,b)=>a.x-b.x);out+=L.parts.map(q=>q.s).join(" ")+"\n"});out+="\n"}
+  return out.replace(/[ \t]+/g," ");
+}
+
+function extract(text){
+  const t=text.replace(/ | /g," "),r={};
+  let m=t.match(/(?:du|p[ée]riode(?: d['’]emploi)?(?: du)?)\s*:?\s*(\d{1,2}[\/.\-]\d{1,2}[\/.\-]\d{2,4})\s*(?:au|-|à)\s*(\d{1,2}[\/.\-]\d{1,2}[\/.\-]\d{2,4})/i);
+  if(m){r.start=toIso(m[1].match(DRE));r.end=toIso(m[2].match(DRE))}
+  else{const ds=[...t.matchAll(new RegExp(DRE,"g"))].map(toIso).filter(d=>d>"2000").sort();if(ds.length){r.start=ds[0];r.end=ds.length>1?ds[ds.length-1]:ds[0]}}
+  m=t.match(/(?:raison sociale|nom (?:ou raison sociale )?de l['’]employeur|employeur|d[ée]nomination)\s*:?\s*([^\n]{2,70})/i);
+  if(m)r.employer=m[1].replace(/^(?:\s*:\s*)/,"").trim();
+  m=t.match(/(?:emploi(?: occup[ée])?|fonction|qualification|intitul[ée] du poste|poste)\s*:?\s*([^\n]{2,60})/i);if(m)r.job=m[1].trim();
+  m=t.match(/nombre\s+(?:total\s+)?d['’]heures[^\d\n]{0,40}(\d+(?:[.,]\d+)?)/i)||t.match(/(\d+(?:[.,]\d+)?)\s*(?:h|heures)\b(?!\s*\d)/i);if(m)r.hours=num(m[1]);
+  m=t.match(/nombre\s+(?:de\s+)?cachets[^\d\n]{0,40}(\d+)/i)||t.match(/(\d+)\s*cachets?\b/i);if(m)r.cachets=num(m[1]);
+  m=t.match(/(?:salaire|r[ée]mun[ée]ration|total)\s+brut[^\d\n]{0,60}(\d[\d\s.]*[.,]\d{2})/i);if(m)r.brut=money(m[1]);
+  m=t.match(/annexe\s*(10|8|X|VIII)\b/i);if(m)r.annexe=/10|^X$/i.test(m[1])?"10":"8";
+  else if(/artiste|com[ée]dien|musicien|danseu|chanteu/i.test(t))r.annexe="10";else if(/technicien|r[ée]gisseu|machiniste|[ée]clairagiste|ouvrier/i.test(t))r.annexe="8";
+  m=t.match(/(?:n[°o]\s*d['’]?objet|num[ée]ro d['’]objet|n[°o]\s*AEM|identifiant AEM)\s*:?\s*([A-Z0-9][A-Z0-9\-\/]{3,})/i);if(m)r.ref=m[1];
+  m=t.match(/(\d+(?:[.,]\d+)?)\s*h(?:eures?)?\s*(?:par|\/)\s*cachet/i)||t.match(/heures\s+par\s+cachet[^\d\n]{0,20}(\d+(?:[.,]\d+)?)/i);if(m)r.hpc=num(m[1]);
+  r.guso=/\bGUSO\b|guichet\s+unique\s+(?:du\s+)?spectacle/i.test(t);
+  r.aem=r.guso||/attestation\s+employeur\s+mensuelle|\bAEM\b/i.test(t);
+  if(r.cachets&&r.hours&&!r.hpc&&r.hours>r.cachets){const h=r.hours/r.cachets;if(Number.isInteger(h*2)&&h<=12){r.hpc=h;r.hours=0}}
+  if(r.cachets&&r.hours&&r.hpc&&Math.abs(r.hours-r.cachets*r.hpc)<.01)r.hours=0;
+  return r;
+}
+
+function extractRows(text){
+  const rows=[];const guso=/\bGUSO\b|guichet\s+unique/i.test(text);
+  text.split(/\n/).forEach(line=>{
+    const L=line.replace(/ | /g," ").trim();
+    const ds=[...L.matchAll(new RegExp(DRE,"g"))].map(toIso).filter(d=>d>"2000");
+    if(!ds.length)return;
+    const mon=[...L.matchAll(/(\d[\d ]*[.,]\d{2})\s*(?:€|eur)?/gi)].map(x=>money(x[1]));
+    const cm=L.match(/(\d+)\s*cachets?/i)||L.match(/cachets?\s*:?\s*(\d+)/i);
+    const hm=L.match(/(\d+(?:[.,]\d+)?)\s*h(?:eures?)?\b(?!\s*(?:par|\/)\s*cachet)/i);
+    const pm=L.match(/(\d+(?:[.,]\d+)?)\s*h(?:eures?)?\s*(?:par|\/)\s*cachet/i);
+    if(!mon.length&&!cm&&!hm)return;
+    const emp=L.replace(new RegExp(DRE,"g")," ").replace(/\d[\d ]*[.,]\d{2}\s*(?:€|eur)?/gi," ").replace(/\d+(?:[.,]\d+)?\s*(?:h(?:eures?)?|cachets?)(?:\s*(?:par|\/)\s*cachet)?/gi," ")
+      .replace(/\b(?:du|au|le|cachets?|heures?|brut|net|€)\b/gi," ").replace(/[|;\t]+/g," ").replace(/\s{2,}/g," ").trim();
+    rows.push({start:ds[0],end:ds[1]||ds[0],employer:/[a-zà-ü]{3}/i.test(emp)?emp.slice(0,70):"",cachets:cm?num(cm[1]):0,hours:hm&&!cm?num(hm[1]):(hm&&cm?num(hm[1]):0),hpc:pm?num(pm[1]):0,brut:mon.length?Math.max(...mon):0,annexe:guso?"10":state.settings.annexe,aem:guso,guso});
+  });
+  rows.forEach(r=>{if(r.cachets&&r.hours&&!r.hpc){const h=r.hours/r.cachets;if(h<=12){r.hpc=h;r.hours=0}}if(r.cachets&&r.hpc&&Math.abs(r.hours-r.cachets*r.hpc)<.01)r.hours=0});
+  return rows;
+}
+
+function parseGuso(text){
+  const t=text.replace(/ | /g," ").replace(/[ \t]+/g," ");
+  if(!/ATTESTATION MENSUELLE D['’]EMPLOI/i.test(t)||!/\bGUSO\b/i.test(t))return null;
+  const out=[],seen=new Set();
+  t.split(/ATTESTATION MENSUELLE D['’]EMPLOI/i).slice(1).forEach(b=>{
+    const per=b.match(/Du\s*(\d{1,2}\/\d{1,2}\/\d{4})\s*au\s*(\d{1,2}\/\d{1,2}\/\d{4})(?:\s*,\s*(\d+)\s*jour)?/i);
+    if(!per)return;
+    const ids=new Set([...b.matchAll(/(?:Identifiant\s+\w+|N°\s*Affiliation[^:]*|NIR)\s*:\s*(\d+)/gi)].map(m=>m[1]));
+    const decl=[...b.matchAll(/(?:^|\n)\s*(\d{10})\s*(?=\n)/g)].map(m=>m[1]).find(n=>!ids.has(n))||"";
+    const start=toIso(per[1].match(DRE)),end=toIso(per[2].match(DRE));
+    const key=decl+"|"+start+"|"+end;if(seen.has(key))return;seen.add(key);
+    let emp="";const em=b.match(/EMPLOYEUR\s*(?:SALARI[EÉ])?\s*\n\s*([^\n]+)/i);
+    if(em)emp=em[1].split(/\s+(?:M\.|MME\.?|MLLE\.?|MONSIEUR|MADAME)\s/i)[0].trim();
+    let job="";const jm=b.match(/Emploi occup[ée][^\n]*\n(?:\s*\d+\s*\n)*\s*([^\n]+)/i);
+    if(jm)job=jm[1].split(/\s*\bDu\s+\d/i)[0].trim();
+    const hm=b.match(/(\d+(?:[.,]\d+)?)\s*heure\(s\)/i),cm=b.match(/(\d+)\s*cachet\(s\)/i);
+    let hours=hm?num(hm[1]):0,cachets=cm?num(cm[1]):0,hpc=0;
+    if(cachets&&hours){hpc=hours/cachets;hours=0}
+    const bm=b.match(/Salaire brut(?: avant abattement)?\s*:?[\s\S]{0,250}?(\d[\d ]*,\d{2})\s*€/i);
+    const annexe=/artiste|musicien|com[ée]dien|chanteu|danseu|instrumentiste/i.test(job)?"10":/techni|r[ée]gisseu|machiniste|[ée]clairagiste/i.test(job)?"8":null;
+    out.push({employer:emp.replace(/\s+/g," "),job:job.charAt(0)+job.slice(1).toLowerCase(),start,end,hours,cachets,hpc,brut:bm?money(bm[1]):0,ref:decl,annexe,aem:true,guso:true,jours:per[3]?+per[3]:0});
+  });
+  return out;
+}
+
+/* Une seule valeur d'heures : les cachets détectés sont convertis */
+const toHours=r=>{const h=num(r.hours)+num(r.cachets)*(num(r.hpc)||P().cachet);return Math.round(h*100)/100};
+function draftForm(box,name,r,text){
+  const h=toHours(r);
+  box.innerHTML=`<div class="row"><strong>${esc(name)}</strong>${r.guso?'<span class="pill acc">GUSO</span>':""}<span class="spacer"></span><span class="hint">Vérifiez puis ajoutez</span></div>
+  <div class="fgrid">
+    <label class="f wide">Employeur<input data-k="employer" value="${esc(r.employer||"")}"></label>
+    <label class="f">Poste<input data-k="job" value="${esc(r.job||"")}"></label>
+    <label class="f">Du<input type="date" data-k="start" value="${esc(r.start||"")}"></label>
+    <label class="f">Au<input type="date" data-k="end" value="${esc(r.end||"")}"></label>
+    <label class="f">Heures travaillées<input type="number" step="0.25" data-k="hours" value="${h||""}"></label>
+    <label class="f">Salaire brut (€)<input type="number" step="0.01" data-k="brut" value="${r.brut||""}"></label>
+  </div>
+  ${r.cachets?`<p class="hint">${r.cachets} cachet${r.cachets>1?"s":""} détecté${r.cachets>1?"s":""}, convertis en heures. Corrigez si besoin.</p>`:""}
+  <details class="more"><summary>Texte lu dans le PDF</summary><div><pre class="raw">${esc((text||"").slice(0,5000))}</pre></div></details>
+  <div class="row"><span class="spacer"></span><button class="btn ghost" data-x>Ignorer</button><button class="btn primary" data-addd>Ajouter</button></div>`;
+  box.querySelector("[data-x]").onclick=()=>box.remove();
+  box.querySelector("[data-addd]").onclick=()=>{const v={};box.querySelectorAll("[data-k]").forEach(i=>v[i.dataset.k]=i.value);
+    if(!v.employer||!v.start){toast("Complétez l'employeur et la date");return}
+    store.saveContract({id:uid(),employer:v.employer.trim(),job:v.job.trim(),annexe:r.annexe||state.settings.annexe,kind:"travail",start:v.start,end:v.end||v.start,
+      hours:num(v.hours),cachets:0,hpc:0,brut:num(v.brut),ref:r.ref||"",aem:!!r.aem,planned:parseD(v.start)>today0(),
+      notes:(r.guso?"GUSO"+(r.ref?" · déclaration "+r.ref:"")+" · ":"")+"Importé depuis "+name,days:[],updated:Date.now()});
+    box.classList.add("added");box.innerHTML=`<div class="row"><strong>${esc(v.employer)}</strong><span class="spacer"></span><span class="pill good">Ajouté</span></div>`};
+}
+function showRows(rows,name,text){rows.slice().reverse().forEach((r,i)=>{const b=document.createElement("div");b.className="draft";$("#drafts").prepend(b);draftForm(b,rows.length>1?`${name} · ${rows.length-i}`:name,r,text)})}
+async function handlePdfs(files){
+  if(!window.pdfjsLib){toast("Le lecteur PDF n'a pas pu se charger");return}
+  for(const f of files){const box=document.createElement("div");box.className="draft";box.innerHTML=`<strong>${esc(f.name)}</strong><span class="hint">Lecture…</span>`;$("#drafts").prepend(box);
+    try{const text=await pdfText(f);
+      if(!text.trim()){box.innerHTML=`<strong>${esc(f.name)}</strong><p class="hint">Aucun texte dans ce PDF (probablement un scan). Saisissez-le à la main.</p>`;continue}
+      const g=parseGuso(text);if(g&&g.length){box.remove();showRows(g,f.name,text);continue}
+      const rows=extractRows(text);if(rows.length>=2){box.remove();showRows(rows,f.name,text);continue}
+      draftForm(box,f.name,extract(text),text);
+    }catch(e){box.innerHTML=`<strong>${esc(f.name)}</strong><p class="hint">Lecture impossible : le fichier est peut-être protégé.</p>`}}
+}
+$("#paste-go").onclick=()=>{const text=$("#paste").value;if(!text.trim()){toast("Collez d'abord le tableau");return}
+  const g=parseGuso(text)||[];const rows=g.length?g:extractRows(text);
+  if(rows.length)showRows(rows,"Collage",text);else{const b=document.createElement("div");b.className="draft";$("#drafts").prepend(b);draftForm(b,"Collage",extract(text),text)}
+  $("#paste").value=""};
+const drop=$("#drop");
+["dragenter","dragover"].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add("over")}));
+["dragleave","drop"].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove("over")}));
+drop.addEventListener("drop",e=>handlePdfs([...e.dataTransfer.files].filter(f=>/\.pdf$/i.test(f.name)||/pdf/.test(f.type))));
+$("#pdf-in").onchange=e=>{handlePdfs([...e.target.files]);e.target.value=""};
+$("#btn-import").onclick=()=>{$("#import-panel").hidden=false;$("#import-panel").scrollIntoView({behavior:"smooth",block:"nearest"})};
+$("#import-close").onclick=()=>$("#import-panel").hidden=true;
+
+/* ---------- Export / sauvegarde ---------- */
+async function offerFile(filename,data,mime){
+  try{const dl=window.claude?.use?await claude.use("downloads"):null;if(dl){await dl.save({filename,data:new Blob([data],{type:mime})});return}}catch(e){if(e&&e.code&&e.code!=="unavailable")return}
+  if(!window.claude){try{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([data],{type:mime}));a.download=filename;document.body.appendChild(a);a.click();a.remove();return}catch(e){}}
+  $("#export-box").hidden=false;$("#export-text").value=data;$("#export-text").select()}
+$("#btn-csv").onclick=()=>{const q=v=>`"${String(v??"").replace(/"/g,'""')}"`;
+  const head=["Début","Fin","Employeur","Poste","Type","Statut","Heures","Salaire brut","Annexe","N° déclaration","AEM reçue","Notes"];
+  const rows=[...state.contracts].sort((a,b)=>(a.start||"").localeCompare(b.start||"")).map(c=>[c.start,c.end,c.employer,c.job,KINDS[c.kind]||"Contrat",c.planned?"booké":"travaillé",nf(hoursOf(c),2),nf(num(c.brut),2),c.annexe,c.ref,c.aem?"oui":"non",c.notes].map(q).join(";"));
+  offerFile("contrats-intermittent.csv","﻿"+[head.map(q).join(";"),...rows].join("\n"),"text/csv")};
+$("#btn-backup").onclick=()=>offerFile("carnet-intermittent-sauvegarde.json",JSON.stringify({version:1,contracts:state.contracts,settings:state.settings},null,2),"application/json");
+$("#btn-copy").onclick=async()=>{try{await navigator.clipboard.writeText($("#export-text").value);toast("Copié")}catch(e){$("#export-text").select();toast("Sélectionné : copiez avec Ctrl+C")}};
+$("#restore").onchange=async e=>{const f=e.target.files[0];e.target.value="";if(!f)return;
+  try{const j=JSON.parse(await f.text()),cs=(j.contracts||[]).filter(c=>c&&c.start&&c.employer);for(const c of cs)await store.saveContract({...c,id:c.id||uid()});
+    if(j.settings){state.settings={...state.settings,...j.settings};store.saveSettings();loadSettingsForm()}toast(`${cs.length} contrat(s) restauré(s)`)}catch(err){toast("Sauvegarde illisible")}};
+
+/* ---------- Exemples ---------- */
+async function loadSamples(){const y=new Date().getFullYear(),mo=new Date().getMonth(),d=(b,day)=>iso(new Date(y,mo-b,day));
+  const ex=[["Théâtre du Pays de Morlaix","Régisseur lumière",9,3,9,14,96,1920],["Festival des Arts de la Rue","Technicien plateau",7,10,7,22,118,2240],
+    ["Compagnie Les Passeurs","Régisseur général",5,2,5,9,64,1410],["Comité des fêtes","Technicien son",3,15,3,15,10,175],["Scène nationale","Régie son tournée",1,6,1,20,105,2310],
+    ["Festival d'hiver","Régisseur son",-1,12,-1,15,40,900],["Salle des fêtes","Sonorisation concert",-2,7,-2,7,12,260]];
+  for(const[e,j,b1,d1,b2,d2,h,br]of ex)await store.saveContract({id:uid(),employer:e,job:j,annexe:state.settings.annexe,kind:"travail",start:d(b1,d1),end:d(b2,d2),hours:h,brut:br,aem:b1!==5,planned:b1<0,example:true,days:[],updated:Date.now()});
+  toast("Exemples chargés")}
+async function clearSamples(){const ex=state.contracts.filter(c=>c.example);for(const c of ex)await store.deleteContract(c.id);toast(ex.length?"Exemples supprimés":"Aucun exemple")}
+$("#s-sample").onclick=loadSamples;$("#s-clear-ex").onclick=clearSamples;
+
+/* ---------- Réglages ---------- */
+const PMAP={"p-ajmin":"ajmin","p-pl8":"pl8","p-pl10":"pl10","p-pmss":"pmss","p-net":"net","p-capForm":"capForm","p-maladieH":"maladieH"};
+function loadSettingsForm(){const s=state.settings,p=P();$("#s-situation").value=s.situation||"indemnise";$("#s-ajnotif").value=num(s.ajNotif)||"";$("#s-annexe").value=s.annexe;$("#s-anniv").value=s.anniv||"";$("#s-50").checked=!!s.over50;Object.entries(PMAP).forEach(([id,k])=>$("#"+id).value=p[k])}
+$("#s-annexe").onchange=e=>{state.settings.annexe=e.target.value;iDirty=false;store.saveSettings();renderAll()};
+$("#s-anniv").onchange=e=>{state.settings.anniv=e.target.value;iDirty=false;store.saveSettings();renderAll()};
+$("#s-situation").onchange=e=>{state.settings.situation=e.target.value;store.saveSettings();renderAll()};
+$("#s-ajnotif").addEventListener("input",e=>{state.settings.ajNotif=num(e.target.value);store.saveSettings();renderAll()});
+$("#s-50").onchange=e=>{state.settings.over50=e.target.checked;store.saveSettings();renderAll()};
+Object.entries(PMAP).forEach(([id,k])=>$("#"+id).addEventListener("input",e=>{state.settings.params={...P(),[k]:num(e.target.value)};store.saveSettings();renderAll()}));
+$("#p-default").onclick=()=>{state.settings.params={...DEFAULT_PARAMS};loadSettingsForm();store.saveSettings();renderAll();toast("Valeurs rétablies")};
+
+/* ---------- Navigation ---------- */
+const ALIAS={previsionnel:"accueil",bord:"accueil",indem:"indemnites",import:"contrats"};
+function go(tab){tab=ALIAS[tab]||tab;if(!document.querySelector(`[data-panel="${tab}"]`))tab="accueil";
+  $$("nav.tabs button").forEach(b=>b.setAttribute("aria-selected",b.dataset.tab===tab));$$("[data-panel]").forEach(p=>p.hidden=p.dataset.panel!==tab)}
+$$("nav.tabs button").forEach(b=>b.onclick=()=>go(b.dataset.tab));
+document.addEventListener("click",e=>{
+  const g=e.target.closest("[data-go]");if(g){e.preventDefault();go(g.dataset.go);return}
+  const a=e.target.closest("[data-add]");if(a){openContract(null,a.dataset.add==="booked");return}
+  if(e.target.closest("[data-sample]")){loadSamples();return}
+  const ed=e.target.closest("[data-edit]");if(ed){openContract(state.contracts.find(c=>c.id===ed.dataset.edit));return}
+  const wk=e.target.closest("[data-worked]");if(wk){const c=state.contracts.find(x=>x.id===wk.dataset.worked);if(c){store.saveContract({...c,planned:false,updated:Date.now()});toast("Passé en travaillé")}}
+});
+$("#search").addEventListener("input",renderContracts);
+["#i-sr","#i-nht","#i-annexe"].forEach(s=>$(s).addEventListener("input",()=>{iDirty=true;renderIndem()}));
+$("#i-reset").onclick=()=>{iDirty=false;fillIndem();renderIndem()};
+$("#m-month").addEventListener("input",()=>{mDirty=false;fillMonth();renderIndem()});
+["#m-hours","#m-sal"].forEach(s=>$(s).addEventListener("input",()=>{mDirty=true;renderIndem()}));
+
+/* ---------- Démarrage ---------- */
+const now=new Date();$("#m-month").value=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,"0")}`;
+if(/^#[a-z]+$/.test(location.hash))go(location.hash.slice(1));
+loadSettingsForm();renderAll();initStorage();
+</script>
+
+</body>
+</html>
