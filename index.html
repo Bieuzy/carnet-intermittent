@@ -84,7 +84,9 @@ section{display:grid;gap:18px}
 .sw{width:10px;height:10px;border-radius:3px;display:inline-block;flex:none}
 .sw.w{background:var(--work)} .sw.p{background:repeating-linear-gradient(135deg,var(--accent) 0 2px,var(--accent-soft) 2px 4px)} .sw.m{background:var(--surface);border:1px solid var(--muted)}
 @media (max-width:520px){.trio .v{font-size:21px}.trio{gap:6px}.trio div{padding:8px 9px}.trio .k{font-size:12px}
-  nav.tabs{gap:0}nav.tabs button{font-size:14px;padding:10px 6px}
+  nav.tabs{gap:0;justify-content:space-between}nav.tabs button{font-size:13px;padding:10px 4px;letter-spacing:-.01em}
+  nav.tabs .lg{display:none}
+  .doc{grid-template-columns:62px minmax(0,1fr)}.doc .h{display:none}.doc .acts{grid-column:1/-1}
   .item{grid-template-columns:68px minmax(0,1fr) auto;gap:8px}}
 
 /* Courbe */
@@ -184,6 +186,13 @@ dl.gloss dd{margin:0;color:var(--muted)}
 @media (max-width:520px){dl.gloss{grid-template-columns:1fr;gap:2px}dl.gloss dd{margin-bottom:8px}}
 a{color:var(--accent)}
 .total-line{font-size:13px;color:var(--muted);margin-top:-6px}
+.mhead{font:600 12px var(--f-body);text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding:14px 0 2px;border-top:1px solid var(--line)}
+.mhead:first-of-type{border-top:0;padding-top:4px}
+.mhead+.item{border-top:0}
+.doc .e small{display:block;font:12px var(--f-mono);color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pill.t-guso{background:var(--accent-soft);color:var(--accent)} .pill.t-aem{background:var(--work-soft);color:var(--work)} .pill.t-paie{background:var(--good-soft);color:var(--good)} .pill.t-contrat,.pill.t-ft{background:var(--warn-soft);color:var(--warn)}
+.docedit{grid-column:1/-1;background:var(--sunk);border-radius:8px;padding:12px;display:grid;gap:10px}
+#help-btn[aria-current="true"]{border-color:var(--accent);color:var(--accent)}
 #print{display:none}
 @media print{
   @page{margin:14mm}
@@ -205,15 +214,15 @@ a{color:var(--accent)}
 <div class="wrap">
   <header class="top">
     <h1>Carnet <span>d'intermittent</span></h1>
-    <div class="status" id="status"><span class="dot"></span><span>Chargement…</span></div>
+    <div class="row"><div class="status" id="status"><span class="dot"></span><span>Chargement…</span></div><button class="btn small" id="help-btn" data-go="aide" aria-label="Aide">? Aide</button></div>
   </header>
 
   <nav class="tabs" role="tablist">
-    <button role="tab" data-tab="accueil" aria-selected="true">Mes 507 h</button>
+    <button role="tab" data-tab="accueil" aria-selected="true"><span class="lg">Mes </span>507 h</button>
     <button role="tab" data-tab="contrats" aria-selected="false">Contrats</button>
+    <button role="tab" data-tab="documents" aria-selected="false">Doc<span class="lg">ument</span>s</button>
     <button role="tab" data-tab="indemnites" aria-selected="false">Indemnités</button>
     <button role="tab" data-tab="reglages" aria-selected="false">Réglages</button>
-    <button role="tab" data-tab="aide" aria-selected="false">Aide</button>
   </nav>
 
   <!-- ACCUEIL -->
@@ -234,8 +243,8 @@ a{color:var(--accent)}
           <p class="hint" id="ob-anniv-help">Elle figure sur votre notification de droits France Travail. Laissez vide si vous ne l'avez pas : le calcul portera sur les 12 derniers mois.</p>
         </div></li>
         <li id="onb-2"><div><strong>Vos contrats des 12 derniers mois</strong>
-          <p class="hint">Saisissez-les, ou importez vos attestations PDF (AEM, GUSO) : les champs sont remplis automatiquement.</p>
-          <div class="row"><button class="btn primary" data-add="done">+ Ajouter un contrat</button><button class="btn" data-go="contrats" data-import>Importer des PDF</button><button class="btn ghost" data-sample>Essayer avec des exemples</button></div>
+          <p class="hint">Saisissez-les, ou déposez vos attestations GUSO, AEM et bulletins de paie : ils sont classés et les contrats sont détectés automatiquement.</p>
+          <div class="row"><button class="btn primary" data-add="done">+ Ajouter un contrat</button><button class="btn" data-go="documents">Déposer mes documents</button><button class="btn ghost" data-sample>Essayer avec des exemples</button></div>
         </div></li>
         <li id="onb-3"><div><strong>Vos dates à venir</strong>
           <p class="hint">Ajoutez les dates bookées pour savoir si vous atteindrez 507 h à temps.</p>
@@ -300,6 +309,7 @@ a{color:var(--accent)}
         <span class="hint">AEM, attestations GUSO, bulletins de paie · ou cliquez pour choisir</span>
         <input type="file" id="pdf-in" accept="application/pdf,.pdf" multiple hidden>
       </label>
+      <p class="hint" style="margin-top:10px">Pour garder et classer tous vos documents par mois et par employeur, déposez-les plutôt dans l'onglet <button class="linkbtn" data-go="documents">Documents</button> : les contrats y sont aussi détectés.</p>
       <details class="more" style="margin-top:12px"><summary>Coller un tableau depuis guso.fr</summary>
         <div>
           <textarea id="paste" rows="4" placeholder="Copiez le tableau de vos déclarations sur guso.fr et collez-le ici"></textarea>
@@ -339,6 +349,37 @@ a{color:var(--accent)}
       <textarea id="export-text" rows="6" style="font-family:var(--f-mono);font-size:12px;margin-top:8px"></textarea>
       <div class="row" style="margin-top:8px"><button class="btn" id="btn-copy">Copier</button></div>
     </div>
+  </section>
+
+  <!-- DOCUMENTS -->
+  <section data-panel="documents" hidden>
+    <div class="row"><h2>Documents</h2><span class="spacer"></span><label class="btn primary" for="doc-in">+ Ajouter des documents</label></div>
+    <label class="drop" id="doc-drop" for="doc-in">
+      <strong>Déposez tous vos documents en vrac</strong>
+      <span class="hint">Attestations GUSO, AEM, bulletins de paie, contrats, courriers France Travail… PDF, photos ou fichier ZIP. Ils sont reconnus et rangés par mois et par employeur.</span>
+      <input type="file" id="doc-in" accept="application/pdf,.pdf,.zip,application/zip,image/*" multiple hidden>
+    </label>
+    <div class="panel" id="doc-progress" hidden><div class="row"><strong id="doc-progress-t"></strong><span class="spacer"></span><span class="hint num" id="doc-progress-n"></span></div><div class="track" style="height:8px;margin-top:10px"><i class="w" id="doc-progress-bar" style="width:0"></i></div></div>
+    <div class="panel notice good" id="doc-found" hidden>
+      <div class="row"><h3 id="doc-found-t"></h3></div>
+      <p class="hint">Ces documents décrivent des contrats qui ne sont pas encore dans votre carnet. Vérifiez-les puis ajoutez-les en un clic.</p>
+      <div class="row"><button class="btn primary" id="doc-found-go">Vérifier et ajouter</button></div>
+    </div>
+
+    <div id="doc-tools" style="display:grid;gap:12px">
+      <div class="fgrid">
+        <label class="f">Rechercher<input id="doc-q" type="search" placeholder="Employeur, nom de fichier…"></label>
+        <label class="f">Ranger<select id="doc-group"><option value="mois">Par année et par mois</option><option value="employeur">Par employeur</option><option value="type">Par type de document</option></select></label>
+      </div>
+      <div class="chips" id="doc-chips" role="group" aria-label="Filtrer par type"></div>
+    </div>
+    <div id="doc-groups" style="display:grid;gap:18px"></div>
+    <div class="row" id="doc-actions">
+      <button class="btn" id="doc-zip">Télécharger le classement (ZIP)</button>
+      <span class="spacer"></span>
+      <button class="btn ghost danger" id="doc-wipe">Supprimer tous les documents</button>
+    </div>
+    <p class="hint" id="doc-storage"></p>
   </section>
 
   <!-- INDEMNITES -->
@@ -472,9 +513,14 @@ a{color:var(--accent)}
         <p>L'allocation journalière est comprise entre le minimum de l'annexe et <span data-p="ajmax"></span> € au maximum. Salaire + allocation d'un mois ne peuvent pas dépasser <span data-r="plafondCumulPMSS" data-pct></span> % du plafond mensuel de la Sécurité sociale (<span data-p="pmss"></span> €).</p>
         <p>Ne sont pas pris en compte : le délai d'attente (<span data-r="delaiAttente"></span> jours à l'ouverture des droits), la franchise congés payés (2,5 jours pour 24 jours travaillés, 30 jours au plus) et la franchise salaires, répartie sur 8 mois d'indemnisation au maximum. Seule votre notification France Travail fait foi : saisissez son montant dans l'onglet Indemnités pour des estimations mensuelles plus justes.</p>
       </div></details>
+      <details><summary>Classer mes attestations et bulletins de paie</summary><div>
+        <p>Dans l'onglet <strong>Documents</strong>, déposez tous vos fichiers en vrac (PDF, photos, ou un ZIP). Chacun est reconnu (GUSO, AEM, bulletin de paie, contrat, courrier France Travail), rattaché à son employeur et à son mois, puis rangé par année et par mois, par employeur ou par type.</p>
+        <p>Un PDF GUSO qui contient plusieurs attestations est découpé : une attestation par fichier. Les attestations qui correspondent à un contrat le marquent comme « AEM reçue », et celles qui décrivent un contrat absent de votre carnet vous sont proposées à l'ajout.</p>
+        <p>« Télécharger le classement » produit un ZIP avec des dossiers et des noms de fichiers clairs, par exemple <span class="num">2026/2026-03 mars/2026-03-14 GUSO - Comité des fêtes.pdf</span>. Les photos et les scans sans texte ne peuvent pas être lus : complétez leur date et leur employeur avec « Modifier ».</p>
+      </div></details>
       <details><summary>Où sont enregistrées mes données ?</summary><div>
-        <p>Uniquement dans ce navigateur, sur cet appareil. Rien n'est envoyé sur internet, et les PDF importés sont lus sur place.</p>
-        <p>Conséquence : si vous videz les données du navigateur ou changez d'appareil, vos contrats ne suivent pas. Faites une <strong>sauvegarde</strong> régulièrement (un fichier .json), et utilisez <strong>Restaurer</strong> sur l'autre appareil.</p>
+        <p>Uniquement dans ce navigateur, sur cet appareil. Rien n'est envoyé sur internet, et les PDF importés sont lus sur place. Les documents déposés dans l'onglet Documents y sont aussi gardés.</p>
+        <p>Conséquence : si vous videz les données du navigateur ou changez d'appareil, vos contrats ne suivent pas. Faites une <strong>sauvegarde</strong> régulièrement (un fichier .json), et utilisez <strong>Restaurer</strong> sur l'autre appareil. La sauvegarde ne contient pas les documents : téléchargez leur classement en ZIP, et déposez ce ZIP dans l'onglet Documents de l'autre appareil.</p>
       </div></details>
       <details><summary>Utiliser le carnet sur mon téléphone</summary><div>
         <p>Ouvrez la page dans le navigateur du téléphone, puis « Ajouter à l'écran d'accueil » (menu Partager sur iPhone, menu ⋮ sur Android) : le carnet s'ouvre alors comme une application. Pour retrouver vos contrats saisis sur ordinateur, sauvegardez sur l'ordinateur puis restaurez le fichier sur le téléphone.</p>
@@ -758,7 +804,8 @@ function renderCurve(F){
 function itemHTML(c,right,inW=true,past=false){
   const same=c.start===c.end,h=hoursOf(c);
   const tags=[c.example?'<span class="ex">exemple</span>':"",needsAem(c)?`<button class="pill warn" style="border:0;cursor:pointer" data-aem="${esc(c.id)}" title="Cliquer quand vous l'avez reçue">AEM à récupérer</button>`:"",
-    num(c.cachets)?`<span class="pill">${nf(num(c.cachets))} cachet${num(c.cachets)>1?"s":""}</span>`:""].filter(Boolean).join(" ");
+    num(c.cachets)?`<span class="pill">${nf(num(c.cachets))} cachet${num(c.cachets)>1?"s":""}</span>`:"",
+    ...docsFor(c).slice(0,3).map(d=>`<button class="pill t-${d.type}" style="border:0;cursor:pointer" data-dopen="${esc(d.id)}" title="Ouvrir le document">${DOC_T[d.type]}</button>`)].filter(Boolean).join(" ");
   if(past)return`<div class="item booked">
     <div class="d"><b>${fmtD(c.start)}</b>${same?fmtY(c.start):"→ "+fmtD(c.end)}</div>
     <div class="e"><strong>${esc(c.employer)}</strong><span>${esc(c.job||"")}</span></div>
@@ -793,7 +840,7 @@ function renderContracts(){
     `<div class="empty"><strong>${q?"Aucun résultat":"Aucun contrat"}</strong>${q?"":`Ajoutez un contrat ou importez une attestation PDF.<div class="row" style="justify-content:center;margin-top:12px"><button class="btn primary" data-add="done">+ Ajouter</button><button class="btn" data-sample>Voir des exemples</button></div>`}</div>`;
   $("#sum-done").textContent=dn.length?`${nf(dn.reduce((a,c)=>a+hoursOf(c),0))} h · ${eur(dn.reduce((a,c)=>a+num(c.brut),0))}`:"";
   renderMonths();
-  const emps=[...new Set(state.contracts.map(c=>c.employer).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"fr"));
+  const emps=[...new Set([...state.contracts.map(c=>c.employer),...D.list.filter(d=>d.type!=="ft").map(d=>d.employer)].filter(Boolean))].sort((a,b)=>a.localeCompare(b,"fr"));
   $("#emp-list").innerHTML=emps.map(e=>`<option value="${esc(e)}">`).join("");
   const bi=state.mode==="db"?"":backupInfo();$("#backup-info").textContent=bi;$("#s-backup-info").textContent=bi;
 }
@@ -861,7 +908,7 @@ function renderIndem(){
 }
 
 /* ---------- Rendu global ---------- */
-function renderAll(){renderHome();renderContracts();if(!iDirty)fillIndem();if(!mDirty)fillMonth();renderIndem();paramsInfo()}
+function renderAll(){renderHome();renderContracts();renderDocs();if(!iDirty)fillIndem();if(!mDirty)fillMonth();renderIndem();paramsInfo()}
 
 /* ---------- Dialogue contrat ---------- */
 let editing=null;
@@ -932,15 +979,17 @@ if(window.pdfjsLib){try{pdfjsLib.GlobalWorkerOptions.workerSrc="https://cdnjs.cl
 const DRE=/(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{2,4})/;
 const toIso=m=>{let y=+m[3];if(y<100)y+=2000;return`${y}-${String(+m[2]).padStart(2,"0")}-${String(+m[1]).padStart(2,"0")}`};
 const money=s=>num(String(s).replace(/\s| | /g,"").replace(/\.(?=\d{3}(\D|$))/g,""));
-async function pdfText(file){
-  const buf=await file.arrayBuffer();const doc=await pdfjsLib.getDocument({data:buf}).promise;let out="";
-  for(let p=1;p<=doc.numPages;p++){const tc=await(await doc.getPage(p)).getTextContent();
+/* Texte de chaque page d'un PDF, lignes reconstituées */
+async function pdfPages(buf){
+  const doc=await pdfjsLib.getDocument({data:new Uint8Array(buf.slice(0))}).promise;const pages=[];
+  for(let p=1;p<=doc.numPages;p++){const tc=await(await doc.getPage(p)).getTextContent();let out="";
     const its=tc.items.filter(it=>it.str&&it.str.trim()).map(it=>({x:it.transform[4],y:it.transform[5],s:it.str}));
     its.sort((a,b)=>Math.abs(b.y-a.y)>3?b.y-a.y:a.x-b.x);
     const lines=[];its.forEach(it=>{const L=lines[lines.length-1];if(L&&Math.abs(L.y-it.y)<=3){L.parts.push(it)}else lines.push({y:it.y,parts:[it]})});
-    lines.forEach(L=>{L.parts.sort((a,b)=>a.x-b.x);out+=L.parts.map(q=>q.s).join(" ")+"\n"});out+="\n"}
-  return out.replace(/[ \t]+/g," ");
+    lines.forEach(L=>{L.parts.sort((a,b)=>a.x-b.x);out+=L.parts.map(q=>q.s).join(" ")+"\n"});pages.push(out.replace(/[ \t]+/g," "))}
+  return pages;
 }
+async function pdfText(file){return(await pdfPages(await file.arrayBuffer())).join("\n")}
 
 function extract(text){
   const t=text.replace(/ | /g," "),r={};
@@ -1068,6 +1117,220 @@ $("#pdf-in").onchange=e=>{handlePdfs([...e.target.files]);e.target.value=""};
 $("#btn-import").onclick=()=>{$("#import-panel").hidden=false;$("#import-panel").scrollIntoView({behavior:"smooth",block:"nearest"})};
 $("#import-close").onclick=()=>$("#import-panel").hidden=true;
 
+/* ---------- Documents : dépôt en vrac, reconnaissance, classement ---------- */
+const DOC_T={guso:"GUSO",aem:"AEM",paie:"Bulletin de paie",contrat:"Contrat",ft:"France Travail",autre:"Autre"};
+const DOC_FILE={guso:"GUSO",aem:"AEM",paie:"Bulletin",contrat:"Contrat",ft:"France Travail",autre:"Document"};
+const DOC_FOLDER={guso:"Attestations GUSO",aem:"Attestations AEM",paie:"Bulletins de paie",contrat:"Contrats",ft:"Courriers France Travail",autre:"Autres documents"};
+const MOIS=["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
+const JSZIP_URL="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js",PDFLIB_URL="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js";
+const D={list:[],db:null,mem:{},noIdb:false,group:"mois",type:"all",q:"",editing:null};
+const _ls={};const loadScript=u=>_ls[u]||(_ls[u]=new Promise((res,rej)=>{const s=document.createElement("script");s.src=u;s.onload=res;s.onerror=()=>{delete _ls[u];rej(new Error("script"))};document.head.appendChild(s)}));
+const noAcc=s=>String(s||"").normalize("NFD").replace(/[̀-ͯ]/g,"");
+const normE=s=>noAcc(s).toLowerCase().replace(/\b(sarl|sas|sasu|eurl|sa|asso|association|cie|ste|societe)\b/g," ").replace(/[^a-z0-9]+/g," ").trim();
+const sameEmp=(x,y)=>{const a=normE(x),b=normE(y);return!!a&&!!b&&(a===b||(a.length>=5&&b.includes(a))||(b.length>=5&&a.includes(b)))};
+const safeName=s=>String(s).replace(/[\/\\:*?"<>|]+/g,"-").replace(/\s+/g," ").trim().slice(0,110);
+const kb=n=>n>=1048576?nf(n/1048576,1)+" Mo":nf(Math.max(1,n/1024))+" Ko";
+
+/* Stockage des fichiers : IndexedDB (dans ce navigateur), ou mémoire si indisponible */
+function idb(){return D.db?Promise.resolve(D.db):new Promise((res,rej)=>{let r;try{r=indexedDB.open("carnet-intermittent-docs",1)}catch(e){return rej(e)}
+  r.onupgradeneeded=()=>{r.result.createObjectStore("meta",{keyPath:"id"});r.result.createObjectStore("files",{keyPath:"id"})};
+  r.onsuccess=()=>{D.db=r.result;res(r.result)};r.onerror=()=>rej(r.error)})}
+async function idbOp(store,mode,fn){if(D.noIdb){const m=D.mem[store]=D.mem[store]||{};return fn(null,m)}
+  const db=await idb();return new Promise((res,rej)=>{const t=db.transaction(store,mode),r=fn(t.objectStore(store));t.oncomplete=()=>res(r&&r.result);t.onerror=()=>rej(t.error);t.onabort=()=>rej(t.error)})}
+const dbAll=s=>idbOp(s,"readonly",(st,m)=>m?Object.values(m):st.getAll());
+const dbGet=(s,id)=>idbOp(s,"readonly",(st,m)=>m?m[id]:st.get(id));
+const dbPut=(s,o)=>idbOp(s,"readwrite",(st,m)=>{if(m){m[o.id]=o;return}st.put(o)});
+const dbDel=(s,id)=>idbOp(s,"readwrite",(st,m)=>{if(m){delete m[id];return}st.delete(id)});
+const dbClear=s=>idbOp(s,"readwrite",(st,m)=>{if(m){Object.keys(m).forEach(k=>delete m[k]);return}st.clear()});
+async function hashBuf(buf){try{if(crypto.subtle){const h=await crypto.subtle.digest("SHA-256",buf);return[...new Uint8Array(h)].map(b=>b.toString(16).padStart(2,"0")).join("")}}catch(e){}
+  const u=new Uint8Array(buf);let h=2166136261;for(let i=0;i<u.length;i++){h^=u[i];h=Math.imul(h,16777619)}return"f"+(h>>>0).toString(16)+"-"+u.length}
+
+/* Reconnaissance */
+function docType(t,name){const s=t+"\n"+name;
+  if(/ATTESTATION MENSUELLE D['’]EMPLOI/i.test(t)&&/\bGUSO\b/i.test(t))return"guso";
+  if(/\bguso\b/i.test(name))return"guso";
+  if(/attestation employeur mensuelle|\bAEM\b/i.test(s))return"aem";
+  if(/bulletin de (paie|salaire)|fiche de paie|net [àa] payer|net imposable|salaire de base/i.test(s))return"paie";
+  if(/contrat de travail|contrat d['’]engagement|\bCDDU\b|d[ée]termin[ée]e d['’]usage|\bcontrat\b/i.test(s))return"contrat";
+  if(/france travail|p[ôo]le emploi/i.test(s))return"ft";
+  if(/\bGUSO\b/i.test(t))return"guso";
+  return"autre"}
+const validIso=d=>{if(!d)return"";const[y,m,j]=d.split("-").map(Number);return y>2000&&y<2100&&m>=1&&m<=12&&j>=1&&j<=31?d:""};
+function docDates(t){const DS="(\\d{1,2}[\\/.\\-]\\d{1,2}[\\/.\\-]\\d{2,4})";
+  let m=t.match(new RegExp("p[ée]riode[^\\n\\d]{0,30}"+DS+"\\s*(?:au|-|à)\\s*"+DS,"i"))||t.match(new RegExp("\\bdu\\s*"+DS+"\\s*au\\s*"+DS,"i"));
+  if(m){const a=validIso(toIso(m[1].match(DRE))),b=validIso(toIso(m[2].match(DRE)));if(a)return{date:a,end:b||a}}
+  m=t.match(/p[ée]riode[^\n\d]{0,30}(\d{1,2})[\/.\-](20\d\d)\b/i);if(m&&+m[1]>=1&&+m[1]<=12)return{date:`${m[2]}-${String(+m[1]).padStart(2,"0")}-01`,monthOnly:true};
+  m=noAcc(t).match(/\b(janvier|fevrier|mars|avril|mai|juin|juillet|aout|septembre|octobre|novembre|decembre)\s+(20\d\d)\b/i);
+  if(m){const i=MOIS.map(noAcc).indexOf(m[1].toLowerCase());return{date:`${m[2]}-${String(i+1).padStart(2,"0")}-01`,monthOnly:true}}
+  m=t.match(/\b(20\d\d)[-_ .](0[1-9]|1[0-2])\b/);if(m)return{date:`${m[1]}-${m[2]}-01`,monthOnly:true};
+  const ds=[...t.matchAll(new RegExp(DRE,"g"))].map(x=>validIso(toIso(x))).filter(Boolean).sort();if(ds.length)return{date:ds[0]};
+  return{}}
+function knownEmployer(t){const T=" "+normE(t)+" ";
+  const emps=[...new Set([...state.contracts.map(c=>c.employer),...D.list.map(d=>d.type!=="ft"?d.employer:"")].filter(e=>e&&normE(e).length>=4))].sort((a,b)=>b.length-a.length);
+  return emps.find(e=>T.includes(" "+normE(e)+" "))||""}
+function payslipEmployer(t){const L=t.split("\n").map(s=>s.trim()).filter(Boolean);
+  const bad=/bulletin|salaire|p[ée]riode|paie|page|date|siret|siren|\bape\b|naf|urssaf|convention|emploi|matricule|n[°o]\s|\d{5}|\brue\b|avenue|boulevard|chemin|cedex|^m\.|^mme|^monsieur|^madame|net |brut/i;
+  const ok=l=>/[a-zà-ü]{3}/i.test(l)&&!bad.test(l)&&l.length<=60;
+  const i=L.findIndex(l=>/siret|siren|code\s*ape|\bnaf\b|urssaf/i.test(l));
+  if(i>=0){const before=L[i].split(/siret|siren/i)[0].replace(/[:\-–]+$/,"").trim();if(ok(before))return before;for(let k=i-1;k>=Math.max(0,i-4);k--)if(ok(L[k]))return L[k]}
+  return L.slice(0,5).find(ok)||""}
+function docMeta(text,name,type){const b={type,employer:"",date:"",end:"",detail:null};
+  if(type==="ft")b.employer="France Travail";
+  if(type==="guso"){const g=parseGuso(text);if(g&&g.length){const r=g[0];Object.assign(b,{employer:r.employer,date:r.start,end:r.end,detail:r})}}
+  if(type==="aem"||type==="contrat"||(type==="guso"&&!b.detail)){const r=extract(text);if(r.start){b.date=validIso(r.start);b.end=validIso(r.end)}if(r.employer)b.employer=r.employer.slice(0,70);
+    if(type!=="contrat"&&r.start&&(r.hours||r.cachets||r.brut))b.detail={...r,aem:true}}
+  if(type!=="ft"){const k=knownEmployer(text);if(k&&(!b.employer||type==="paie"||sameEmp(b.employer,k)))b.employer=k}
+  if(!b.employer&&type==="paie")b.employer=payslipEmployer(text);
+  if(!b.date){const d=docDates(text);Object.assign(b,d)}
+  if(!b.date){const d=docDates(noAcc(name).replace(/_/g," "));if(d.date)Object.assign(b,d,{dateGuess:true})}
+  if(type==="paie"&&b.date&&!b.monthOnly){b.monthOnly=true}
+  return b}
+/* Un PDF GUSO qui contient plusieurs attestations est découpé : une attestation = un fichier */
+async function splitGuso(buf,pages,name){
+  const starts=pages.map((p,i)=>/ATTESTATION MENSUELLE D['’]EMPLOI/i.test(p)?i:-1).filter(i=>i>=0);if(starts.length<2)return[];
+  const items=[];starts.forEach((s,k)=>{const a=k?s:0,b=(k+1<starts.length?starts[k+1]:pages.length)-1,text=pages.slice(a,b+1).join("\n");
+    const g=(parseGuso(text)||[])[0],key=g?g.ref+"|"+g.start+"|"+g.end:"",last=items[items.length-1];
+    if(last&&key&&last.key===key){last.b=b;last.text+="\n"+text}else items.push({a,b,text,key,g})});
+  if(items.length<2)return[];
+  try{await loadScript(PDFLIB_URL)}catch(e){return[]}
+  const src=await PDFLib.PDFDocument.load(buf.slice(0),{ignoreEncryption:true}),out=[];
+  for(const it of items){const d=await PDFLib.PDFDocument.create();const idx=[];for(let i=it.a;i<=it.b;i++)idx.push(i);
+    (await d.copyPages(src,idx)).forEach(p=>d.addPage(p));const bytes=await d.save();
+    const meta=it.g?{type:"guso",employer:it.g.employer,date:it.g.start,end:it.g.end,detail:it.g}:docMeta(it.text,name,"guso");
+    const k=knownEmployer(it.text);if(k&&(!meta.employer||sameEmp(meta.employer,k)))meta.employer=k;
+    out.push({meta,data:bytes.buffer.slice(bytes.byteOffset,bytes.byteOffset+bytes.byteLength)})}
+  return out}
+/* Lien document ↔ contrat (même employeur, dates qui se recoupent) */
+function docContract(d){if(!d.date||!d.employer||d.type==="ft"||d.type==="autre")return null;const ym=d.date.slice(0,7),e=d.end||d.date;
+  return state.contracts.find(c=>c.start&&sameEmp(c.employer,d.employer)&&(d.monthOnly?(c.start.slice(0,7)<=ym&&(c.end||c.start).slice(0,7)>=ym):(d.date<=(c.end||c.start)&&e>=c.start)))||null}
+const docsFor=c=>D.list.filter(d=>docContract(d)===c);
+const isCaps=s=>s===s.toUpperCase()&&/[A-Z]/.test(s);
+function canonEmp(name){if(!name)return"";const k=normE(name);
+  const c=state.contracts.find(x=>x.employer&&normE(x.employer)===k);if(c)return c.employer;
+  const v=D.list.map(d=>d.employer).filter(e=>e&&normE(e)===k);return v.find(e=>!isCaps(e))||name}
+
+/* Dépôt */
+function docProgress(t,i,n){$("#doc-progress").hidden=!t;if(!t)return;$("#doc-progress-t").textContent=t;$("#doc-progress-n").textContent=n?`${i} / ${n}`:"";$("#doc-progress-bar").style.width=(n?i/n*100:0)+"%"}
+async function ingestDocs(files){files=[...files];if(!files.length)return;go("documents");
+  const queue=[];docProgress("Ouverture des fichiers…",0,0);
+  for(const f of files){if(/\.zip$/i.test(f.name)||/zip/.test(f.type)){
+      try{await loadScript(JSZIP_URL);const z=await JSZip.loadAsync(f);
+        for(const e of Object.values(z.files)){if(e.dir||/(^|\/)(__MACOSX|\.)/.test(e.name)||!/\.(pdf|jpe?g|png|webp|heic)$/i.test(e.name))continue;
+          const ext=e.name.split(".").pop().toLowerCase(),b=await e.async("blob");
+          queue.push(new File([b],e.name.split("/").pop(),{type:ext==="pdf"?"application/pdf":"image/"+(ext==="jpg"?"jpeg":ext),lastModified:e.date?e.date.getTime():Date.now()}))}}
+      catch(err){toast(`Impossible d'ouvrir le ZIP ${f.name}`)}}
+    else if(/pdf|image\//.test(f.type)||/\.(pdf|jpe?g|png|webp|heic)$/i.test(f.name))queue.push(f)}
+  let added=0,dup=0,fail=0,split=0,aemOk=0;
+  for(let i=0;i<queue.length;i++){const f=queue[i];docProgress(`Lecture de ${f.name}`,i,queue.length);
+    try{const buf=await f.arrayBuffer(),h=await hashBuf(buf);
+      if(D.list.some(d=>d.srcHash===h||d.hash===h)){dup++;continue}
+      const isPdf=/pdf/.test(f.type)||/\.pdf$/i.test(f.name);let parts=[];
+      if(isPdf&&window.pdfjsLib){let pages=[];try{pages=await pdfPages(buf)}catch(e){}
+        const text=pages.join("\n"),type=docType(text,f.name);
+        if(type==="guso"&&pages.length>1){try{parts=await splitGuso(buf,pages,f.name)}catch(e){parts=[]}}
+        if(!parts.length)parts=[{meta:{...docMeta(text,f.name,type),scan:!text.trim()},data:buf}]}
+      else parts=[{meta:{...docMeta("",f.name,docType("",f.name)),scan:true},data:buf}];
+      if(parts.length>1)split+=parts.length-1;
+      for(let k=0;k<parts.length;k++){const p=parts[k],id=uid();
+        if(!p.meta.date){p.meta.date=iso(new Date(f.lastModified||Date.now()));p.meta.dateGuess=true}
+        const m={id,origName:f.name,part:parts.length>1?k+1:0,parts:parts.length,mime:isPdf?"application/pdf":(f.type||"image/jpeg"),size:p.data.byteLength,
+          srcHash:h,hash:parts.length>1?await hashBuf(p.data):h,added:Date.now(),...p.meta};
+        await dbPut("files",{id,data:p.data});await dbPut("meta",m);D.list.push(m);added++;
+        if(m.type==="guso"||m.type==="aem"){const c=docContract(m);if(c&&!c.aem&&!c.planned){await store.saveContract({...c,aem:true,updated:Date.now()});aemOk++}}}
+    }catch(e){fail++}}
+  docProgress("");renderDocs();renderContracts();
+  const msg=[added?`${added} document${added>1?"s":""} classé${added>1?"s":""}`+(split?` (dont ${split} attestation${split>1?"s":""} séparée${split>1?"s":""})`:""):"",dup?`${dup} déjà présent${dup>1?"s":""}`:"",fail?`${fail} illisible${fail>1?"s":""}`:"",aemOk?`${aemOk} AEM cochée${aemOk>1?"s":""} reçue${aemOk>1?"s":""}`:""].filter(Boolean).join(" · ");
+  toast(msg||"Aucun document PDF ou image trouvé")}
+$("#doc-in").onchange=e=>{ingestDocs(e.target.files);e.target.value=""};
+const ddrop=$("#doc-drop");
+["dragenter","dragover"].forEach(ev=>ddrop.addEventListener(ev,e=>{e.preventDefault();ddrop.classList.add("over")}));
+["dragleave","drop"].forEach(ev=>ddrop.addEventListener(ev,e=>{e.preventDefault();ddrop.classList.remove("over")}));
+ddrop.addEventListener("drop",e=>ingestDocs(e.dataTransfer.files));
+
+/* Affichage */
+const monthLabel=d=>MOIS[+d.slice(5,7)-1]+" "+d.slice(0,4);
+function docFileName(d){const ext=d.mime==="application/pdf"?"pdf":((d.origName||"").split(".").pop()||"jpg").toLowerCase();
+  const date=d.date?(d.monthOnly?d.date.slice(0,7):d.date):"sans-date";
+  return safeName(`${date} ${DOC_FILE[d.type]}${d.employer&&d.type!=="ft"?" - "+canonEmp(d.employer):""}`)+"."+ext}
+function docKeys(d){const y=d.date?d.date.slice(0,4):"Sans date",mo=d.date?`${d.date.slice(0,7)} ${MOIS[+d.date.slice(5,7)-1]}`:"Sans date";
+  if(D.group==="employeur")return[canonEmp(d.employer)||"Employeur à préciser",y];
+  if(D.group==="type")return[DOC_FOLDER[d.type],y];
+  return[y,mo]}
+function docFiltered(){const q=normE(D.q);return D.list.filter(d=>(D.type==="all"||d.type===D.type)&&(!q||normE(d.employer+" "+d.origName+" "+DOC_T[d.type]+" "+(d.date?monthLabel(d.date):"")).includes(q)))}
+function docItem(d){const c=docContract(d),dt=d.date;
+  const left=dt?(d.monthOnly?`<b>${MOIS[+dt.slice(5,7)-1]}</b>${dt.slice(0,4)}`:`<b>${fmtD(dt)}</b>${d.end&&d.end!==dt?"→ "+fmtD(d.end):dt.slice(0,4)}`):"<b>—</b>";
+  const flags=[c?`lié au contrat du ${fmtD(c.start)}`:"",d.parts>1?`attestation ${d.part}/${d.parts} du fichier`:"",d.scan?'<b style="color:var(--warn)">sans texte lisible : à compléter</b>':"",d.dateGuess?'<b style="color:var(--warn)">date à vérifier</b>':"",!d.employer&&d.type!=="autre"?'<b style="color:var(--warn)">employeur à préciser</b>':""].filter(Boolean).join(" · ");
+  const ed=D.editing===d.id?`<div class="docedit"><div class="fgrid">
+      <label class="f">Type<select data-de="type">${Object.entries(DOC_T).map(([k,v])=>`<option value="${k}" ${k===d.type?"selected":""}>${v}</option>`).join("")}</select></label>
+      <label class="f">Employeur<input data-de="employer" list="emp-list" value="${esc(d.employer)}"></label>
+      <label class="f">Date<input type="date" data-de="date" value="${esc(d.date||"")}"></label>
+      <label class="f">Jusqu'au (facultatif)<input type="date" data-de="end" value="${esc(d.end||"")}"></label></div>
+      <label class="check"><input type="checkbox" data-de="all"><span>Appliquer cet employeur aux autres documents « ${esc(d.employer||"sans employeur")} »</span></label>
+      <div class="row"><span class="spacer"></span><button class="btn ghost small" data-dcancel>Annuler</button><button class="btn primary small" data-dsave="${esc(d.id)}">Enregistrer</button></div></div>`:"";
+  return`<div class="item doc"><div class="d">${left}</div>
+    <div class="e"><strong>${esc(d.type==="ft"?"France Travail":canonEmp(d.employer)||"Employeur à préciser")}</strong><span><span class="pill t-${d.type}">${DOC_T[d.type]}</span>${flags?" · "+flags:""}</span><small title="${esc(d.origName)}">${esc(docFileName(d))}</small></div>
+    <div class="h"><small>${kb(d.size)}</small></div>
+    <div class="acts"><button class="btn ghost small" data-dopen="${esc(d.id)}">Ouvrir</button><button class="btn ghost small" data-dedit="${esc(d.id)}">Modifier</button><button class="btn ghost small" data-ddel="${esc(d.id)}">Supprimer</button></div>${ed}</div>`}
+function docFound(){return D.list.filter(d=>(d.type==="guso"||d.type==="aem")&&d.detail&&d.date&&!d.dismissed&&!docContract(d))}
+function renderDocs(){const has=D.list.length;
+  $("#doc-tools").hidden=!has;$("#doc-actions").hidden=!has;
+  const cnt={all:has};D.list.forEach(d=>cnt[d.type]=(cnt[d.type]||0)+1);if(D.type!=="all"&&!cnt[D.type])D.type="all";
+  $("#doc-chips").innerHTML=[["all","Tous"],...Object.entries(DOC_T)].filter(([k])=>cnt[k]).map(([k,l])=>`<button type="button" data-dtype="${k}" aria-pressed="${D.type===k}">${l}<b>${cnt[k]}</b></button>`).join("");
+  const list=docFiltered(),groups=new Map();
+  list.forEach(d=>{const[a,b]=docKeys(d);if(!groups.has(a))groups.set(a,new Map());const g=groups.get(a);if(!g.has(b))g.set(b,[]);g.get(b).push(d)});
+  const tops=[...groups.keys()].sort((a,b)=>D.group==="mois"?b.localeCompare(a):a==="Employeur à préciser"?1:b==="Employeur à préciser"?-1:a.localeCompare(b,"fr"));
+  $("#doc-groups").innerHTML=!has?`<div class="panel empty"><strong>Aucun document pour l'instant</strong>Déposez vos attestations et bulletins de paie ci-dessus : ils restent sur cet appareil.</div>`:
+    !list.length?`<div class="panel empty"><strong>Aucun résultat</strong></div>`:
+    tops.map(t=>{const g=groups.get(t),subs=[...g.keys()].sort((a,b)=>b.localeCompare(a)),n=subs.reduce((a,s)=>a+g.get(s).length,0);
+      return`<div class="panel"><div class="row" style="margin-bottom:4px"><h3>${esc(t)}</h3><span class="hint">${n} document${n>1?"s":""}</span><span class="spacer"></span><button class="btn ghost small" data-dzip="${esc(t)}">Télécharger (ZIP)</button></div>
+        <div class="list">${subs.map(s=>`<div class="mhead">${esc(D.group==="mois"?s.replace(/^\d{4}-\d{2} /,""):s)} · ${g.get(s).length}</div>`+g.get(s).sort((a,b)=>(b.date||"").localeCompare(a.date||"")).map(docItem).join("")).join("")}</div></div>`}).join("");
+  const size=D.list.reduce((a,d)=>a+(d.size||0),0);
+  $("#doc-storage").textContent=has?(D.noIdb?"Ce navigateur ne permet pas de garder les documents (navigation privée ?) : ils disparaîtront à la fermeture de la page. Téléchargez le classement en ZIP.":
+    `${has} document${has>1?"s":""} (${kb(size)}), gardés dans ce navigateur uniquement. Ils ne sont pas inclus dans la sauvegarde .json : téléchargez le classement en ZIP pour les conserver ailleurs.`):"";
+  const f=docFound();$("#doc-found").hidden=!f.length;
+  if(f.length)$("#doc-found-t").textContent=`${f.length} contrat${f.length>1?"s":""} à ajouter d'après vos documents`}
+
+/* Actions */
+async function docOpen(id){const d=D.list.find(x=>x.id===id),f=await dbGet("files",id);if(!d||!f){toast("Fichier introuvable");return}
+  const blob=new Blob([f.data],{type:d.mime}),url=URL.createObjectURL(blob);let w=null;try{w=window.open(url,"_blank")}catch(e){}
+  if(!w)downloadBlob(blob,docFileName(d));setTimeout(()=>URL.revokeObjectURL(url),60000)}
+async function downloadBlob(blob,filename){
+  try{const dl=window.claude?.use?await claude.use("downloads"):null;if(dl){await dl.save({filename,data:blob});return}}catch(e){if(e&&e.code&&e.code!=="unavailable"){toast("Téléchargement impossible");return}}
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),60000)}
+async function docZip(list,label){if(!list.length)return;toast("Préparation du ZIP…");
+  try{await loadScript(JSZIP_URL)}catch(e){toast("Le module ZIP n'a pas pu se charger");return}
+  const z=new JSZip(),used=new Set();
+  for(const d of list){const f=await dbGet("files",d.id);if(!f)continue;const base=[...docKeys(d).map(safeName),docFileName(d)].join("/");let p=base,n=2;
+    while(used.has(p))p=base.replace(/(\.\w+)$/,` (${n++})$1`);used.add(p);z.file(p,f.data,{date:new Date(d.added||Date.now())})}
+  const blob=await z.generateAsync({type:"blob"});await downloadBlob(blob,`documents-intermittent${label?"-"+safeName(label):""}-${iso(new Date())}.zip`)}
+$("#doc-zip").onclick=()=>docZip(docFiltered(),"");
+$("#doc-q").addEventListener("input",e=>{D.q=e.target.value;renderDocs()});
+$("#doc-group").onchange=e=>{D.group=e.target.value;try{localStorage.setItem("carnet-intermittent-docgroup",D.group)}catch(err){}renderDocs()};
+$("#doc-found-go").onclick=()=>{const f=docFound();const rows=f.map(d=>({...d.detail,employer:d.employer||d.detail.employer,start:d.date,end:d.end||d.date,aem:true,guso:d.type==="guso"}));
+  go("contrats");showRows(rows,"Documents","");toast("Vérifiez puis ajoutez : « Tout ajouter » est en haut de la liste")};
+let dwipe=false;
+$("#doc-wipe").onclick=async()=>{if(!dwipe){dwipe=true;$("#doc-wipe").textContent=`Confirmer : supprimer ${D.list.length} documents`;setTimeout(()=>{dwipe=false;$("#doc-wipe").textContent="Supprimer tous les documents"},4000);return}
+  dwipe=false;$("#doc-wipe").textContent="Supprimer tous les documents";await dbClear("files");await dbClear("meta");D.list=[];renderDocs();renderContracts();toast("Documents supprimés")};
+document.addEventListener("click",async e=>{const t=e.target;
+  const o=t.closest("[data-dopen]");if(o){docOpen(o.dataset.dopen);return}
+  const ed=t.closest("[data-dedit]");if(ed){D.editing=D.editing===ed.dataset.dedit?null:ed.dataset.dedit;renderDocs();return}
+  if(t.closest("[data-dcancel]")){D.editing=null;renderDocs();return}
+  const sv=t.closest("[data-dsave]");if(sv){const d=D.list.find(x=>x.id===sv.dataset.dsave);if(!d)return;const box=sv.closest(".docedit"),v=k=>box.querySelector(`[data-de="${k}"]`);
+    const oldEmp=d.employer,nd={...d,type:v("type").value,employer:v("employer").value.trim(),date:v("date").value,end:v("end").value,dateGuess:false,monthOnly:false};
+    const others=v("all").checked&&oldEmp!==nd.employer?D.list.filter(x=>x.id!==d.id&&x.employer===oldEmp):[];
+    for(const x of[nd,...others.map(x=>({...x,employer:nd.employer}))]){await dbPut("meta",x);D.list[D.list.findIndex(y=>y.id===x.id)]=x}
+    D.editing=null;renderDocs();renderContracts();toast(others.length?`${others.length+1} documents mis à jour`:"Document mis à jour");return}
+  const dl=t.closest("[data-ddel]");if(dl){const d=D.list.find(x=>x.id===dl.dataset.ddel);if(!d)return;const f=await dbGet("files",d.id);
+    await dbDel("files",d.id);await dbDel("meta",d.id);D.list=D.list.filter(x=>x.id!==d.id);renderDocs();renderContracts();
+    toast("Document supprimé",{label:"Annuler",fn:async()=>{if(f)await dbPut("files",f);await dbPut("meta",d);D.list.push(d);renderDocs();renderContracts()}});return}
+  const ty=t.closest("[data-dtype]");if(ty){D.type=ty.dataset.dtype;renderDocs();return}
+  const z=t.closest("[data-dzip]");if(z){docZip(docFiltered().filter(d=>docKeys(d)[0]===z.dataset.dzip),z.dataset.dzip);return}
+});
+async function loadDocs(){try{D.group=localStorage.getItem("carnet-intermittent-docgroup")||"mois"}catch(e){}$("#doc-group").value=D.group;
+  try{if(!window.indexedDB)throw 0;D.list=await dbAll("meta")}catch(e){D.noIdb=true;D.list=[]}
+  try{navigator.storage&&navigator.storage.persist&&D.list.length&&navigator.storage.persist()}catch(e){}
+  renderDocs();renderContracts()}
+
 /* ---------- Export / sauvegarde ---------- */
 async function offerFile(filename,data,mime){
   try{const dl=window.claude?.use?await claude.use("downloads"):null;if(dl){await dl.save({filename,data:new Blob([data],{type:mime})});return true}}catch(e){if(e&&e.code&&e.code!=="unavailable")return false}
@@ -1154,9 +1417,9 @@ $("#p-default").onclick=()=>{state.settings.paramsOverride={};loadSettingsForm()
 $("#s-csg").onchange=e=>{state.settings.csg=e.target.value;store.saveSettings();renderAll()};
 
 /* ---------- Navigation ---------- */
-const ALIAS={previsionnel:"accueil",bord:"accueil",indem:"indemnites",import:"contrats"};
+const ALIAS={previsionnel:"accueil",bord:"accueil",indem:"indemnites",import:"contrats",docs:"documents"};
 function go(tab,scroll=true){tab=ALIAS[tab]||tab;if(!document.querySelector(`[data-panel="${tab}"]`))tab="accueil";
-  $$("nav.tabs button").forEach(b=>{const on=b.dataset.tab===tab;b.setAttribute("aria-selected",on);b.tabIndex=on?0:-1});$$("[data-panel]").forEach(p=>p.hidden=p.dataset.panel!==tab);
+  $$("nav.tabs button").forEach(b=>{const on=b.dataset.tab===tab;b.setAttribute("aria-selected",on);b.tabIndex=on?0:-1});$$("[data-panel]").forEach(p=>p.hidden=p.dataset.panel!==tab);$("#help-btn").setAttribute("aria-current",tab==="aide");
   try{history.replaceState(null,"",tab==="accueil"?location.pathname+location.search:"#"+tab)}catch(e){}
   if(scroll&&window.scrollY>120)window.scrollTo({top:0})}
 $$("nav.tabs button").forEach(b=>b.onclick=()=>go(b.dataset.tab));
@@ -1188,7 +1451,7 @@ $("#m-month").addEventListener("input",()=>{mDirty=false;fillMonth();renderIndem
 /* ---------- Démarrage ---------- */
 const now=new Date();$("#m-month").value=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,"0")}`;
 if(/^#[a-z]+$/.test(location.hash))go(location.hash.slice(1));
-migrateParams();loadSettingsForm();renderAll();initStorage();loadBaremes();
+migrateParams();loadSettingsForm();renderAll();initStorage();loadBaremes();loadDocs();
 </script>
 
 </body>
