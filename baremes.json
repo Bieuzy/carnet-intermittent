@@ -1,0 +1,36 @@
+{
+  "verifie_le": "2026-10-27",
+  "reference": "Guide France Travail « Intermittents du spectacle », édition septembre 2026 ; Unédic, pas de revalorisation au 1er juillet 2026 ; PMSS 2026",
+  "sources": [
+    { "titre": "France Travail · Guide des intermittents du spectacle", "url": "https://www.francetravail.fr/files/live/sites/PE/files/fichiers-en-telechargement/fichiers-en-telechargement---dem/GUIDE-INTERMITTENT.pdf" },
+    { "titre": "Unédic · Allocations : pas de revalorisation au 1er juillet 2026", "url": "https://www.unedic.org/actualites/allocations-dassurance-chomage-pas-de-revalorisation-au-1er-juillet-2026" },
+    { "titre": "Plafond de la Sécurité sociale 2026", "url": "https://www.legisocial.fr/reperes-sociaux/plafond-securite-sociale-2026.html" }
+  ],
+  "params": {
+    "ajmin": 31.96,
+    "ajmax": 174.80,
+    "pl8": 38,
+    "pl10": 44,
+    "pmss": 4005,
+    "cachet": 12,
+    "capForm": 338,
+    "maladieH": 5
+  },
+  "regles": {
+    "heures": 507,
+    "enseignement": 70,
+    "enseignement50": 120,
+    "divA": 5000,
+    "divB": 507,
+    "annexe8":  { "a": 0.42, "seuilSR": 14400, "aAu": 0.05, "b": 0.26, "seuilH": 720, "bAu": 0.08, "c": 0.40, "heuresParJour": 8,  "coefJours": 1.4 },
+    "annexe10": { "a": 0.36, "seuilSR": 13700, "aAu": 0.05, "b": 0.26, "seuilH": 690, "bAu": 0.08, "c": 0.70, "heuresParJour": 10, "coefJours": 1.3 },
+    "plafondCumulPMSS": 1.18,
+    "regimeGeneralCumul": 0.70,
+    "delaiAttente": 7,
+    "rattrapage": { "heures": 338, "mois": 6, "anciennete": 2535 },
+    "prelevements": { "seuilRetraite": 31.96, "tauxRetraite": 0.93, "seuilCSG": 62, "csgPlein": 6.2, "csgReduit": 3.8, "crds": 0.5, "assiette": 98.25 }
+  },
+  "annonces": [
+    "Les attestations employeur mensuelles (AEM) sont progressivement remplacées par la DSN depuis le second semestre 2025, avec une bascule complète prévue début 2027. Vos employeurs n'auront alors plus d'AEM à vous remettre : vérifiez vos heures dans votre espace France Travail."
+  ]
+}
